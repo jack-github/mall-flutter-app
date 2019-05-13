@@ -1,19 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
+import 'package:annotation_route/route.dart';
 
-void main() => runApp(MyApp());
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: "Hello World",
-      home: RandomWords(),
-    );
-  }
-}
-
+@ARoute(url:'page//test')
 class RandomWords extends StatefulWidget {
+  dynamic option;
+  RandomWords(this.option):super();
   @override
   State<StatefulWidget> createState() {
     return RandomWordsState();

@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-void main() {
-  runApp(new MaterialApp(
-    title: 'Flutter Tutorial',
-    home: MyButton(),
-  ));
-}
+import 'package:annotation_route/route.dart';
+
+@ARoute(url:'page//test2')
 class MyButton extends StatelessWidget {
+  dynamic option;
+  MyButton(this.option):super();
   @override
   Widget build(BuildContext context) {
     return new GestureDetector(
