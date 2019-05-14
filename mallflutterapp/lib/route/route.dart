@@ -14,6 +14,9 @@ class MallRouteOption {
 }
 
 class MallRoute {
+  ///获取页面
+  ///url 地址
+  /// bundle 参数
   static Widget getPage(String url, Map<String, dynamic> bundle) {
     ARouterInternalImpl internal = ARouterInternalImpl();
     ARouterResult routerResult = internal.findPage(
@@ -28,4 +31,6 @@ class MallRoute {
       ),
     );
   }
+
+
 }

@@ -6,34 +6,42 @@
 
 import 'dart:convert';
 import 'package:annotation_route/route.dart';
-import 'package:mallflutterapp/biz/home/HomePage.dart';
-import 'package:mallflutterapp/biz/category/CategoryPage.dart';
-import 'package:mallflutterapp/test2.dart';
 import 'package:mallflutterapp/biz/special/SpecialPage.dart';
+import 'package:mallflutterapp/biz/common/SplashPage.dart';
+import 'package:mallflutterapp/biz/common/AppRootPage.dart';
 import 'package:mallflutterapp/biz/account/AccountPage.dart';
+import 'package:mallflutterapp/biz/category/CategoryPage.dart';
 import 'package:mallflutterapp/test.dart';
+import 'package:mallflutterapp/biz/home/HomePage.dart';
+import 'package:mallflutterapp/test2.dart';
 
 class ARouterInternalImpl extends ARouterInternal {
   ARouterInternalImpl();
   final Map<String, List<Map<String, dynamic>>> innerRouterMap =
       <String, List<Map<String, dynamic>>>{
-    'page//home/homePage': [
-      {'clazz': HomePage}
-    ],
-    'page//category/categoryPage': [
-      {'clazz': CategoryPage}
-    ],
-    'page//test2': [
-      {'clazz': MyButton}
-    ],
     'page//special/specialPage': [
       {'clazz': SpecialPage}
+    ],
+    'page//common/splashPage': [
+      {'clazz': SplashPage}
+    ],
+    'page//common/appRootPage': [
+      {'clazz': AppRootPage}
     ],
     'page//account/accountPage': [
       {'clazz': AccountPage}
     ],
+    'page//category/categoryPage': [
+      {'clazz': CategoryPage}
+    ],
     'page//test': [
       {'clazz': RandomWords}
+    ],
+    'page//home/homePage': [
+      {'clazz': HomePage}
+    ],
+    'page//test2': [
+      {'clazz': MyButton}
     ]
   };
 
@@ -58,18 +66,22 @@ class ARouterInternalImpl extends ARouterInternal {
 
   dynamic instanceFromClazz(Type clazz, dynamic option) {
     switch (clazz) {
-      case HomePage:
-        return new HomePage(option);
-      case CategoryPage:
-        return new CategoryPage(option);
-      case MyButton:
-        return new MyButton(option);
       case SpecialPage:
         return new SpecialPage(option);
+      case SplashPage:
+        return new SplashPage(option);
+      case AppRootPage:
+        return new AppRootPage(option);
       case AccountPage:
         return new AccountPage(option);
+      case CategoryPage:
+        return new CategoryPage(option);
       case RandomWords:
         return new RandomWords(option);
+      case HomePage:
+        return new HomePage(option);
+      case MyButton:
+        return new MyButton(option);
       default:
         return null;
     }

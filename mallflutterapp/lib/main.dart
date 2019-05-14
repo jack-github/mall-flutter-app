@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MyHomePage(title: "TTT"),
+      home: MallRoute.getPage(ViewConst.ROUTE_COMMON_SPLASHPAGE, {}),
     );
   }
 }
