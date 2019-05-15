@@ -8,9 +8,10 @@ import 'package:mallflutterapp/route/route.dart';
 /// @version V1.0.0
 /// @date 2019/5/14
 @ARoute(url: ViewConst.ROUTE_COMMON_SPLASHPAGE)
-class SplashPage extends StatefulWidget{
+class SplashPage extends StatefulWidget {
   dynamic option;
-  SplashPage(this.option):super();
+
+  SplashPage(this.option) : super();
 
   @override
   State<StatefulWidget> createState() {
@@ -19,19 +20,44 @@ class SplashPage extends StatefulWidget{
   }
 }
 
-
 /// 启动页State
 /// @author lizhid
 /// @version V1.0.0
 /// @date 2019/5/14
-class SplashPageState extends State<SplashPage>{
+class SplashPageState extends State<SplashPage> {
+  bool stopCountDown = false;
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return new Scaffold(
-      body: Center(
-        child: Text("Hello 这是启动页"),
-      ),
+    return new Stack(
+      alignment: Alignment.center,
+      children: <Widget>[
+        new Container(
+          color: Colors.white,
+          child: new Image.asset(
+            "assets/images/im_splash.jpg",
+            fit: BoxFit.fill,
+          ),
+          constraints: new BoxConstraints.expand(),
+        ),
+        new Container(
+            margin: EdgeInsets.fromLTRB(0, 30, 10, 0),
+            child: new Align(
+              alignment: Alignment.topRight,
+              child: FlatButton(
+                color: Color(0x0a000000),
+                splashColor: Colors.lightBlueAccent[50],
+                onPressed: startAppRootPage,
+                child: Text(
+                  "跳过",
+                  style: new TextStyle(
+                      color: Colors.white,
+                      fontSize: 15),
+                ),
+              ),
+            ))
+      ],
     );
   }
 
@@ -42,26 +68,30 @@ class SplashPageState extends State<SplashPage>{
     countDown();
   }
 
-    /// 延迟跳转
-    /// @return
-    /// @author lizhid
-    /// @modify
-    /// @date 2019/5/14 15:51
-  void countDown(){
+  /// 延迟跳转
+  /// @return
+  /// @author lizhid
+  /// @modify
+  /// @date 2019/5/14 15:51
+  void countDown() {
     var duration = new Duration(seconds: 3);
-    Future.delayed(duration,(){
-      startAppRootPage();
+    Future.delayed(duration, () {
+      if (!stopCountDown) {
+        startAppRootPage();
+      }
     });
   }
 
-    /// 启动首页
-    /// @return
-    /// @author lizhid
-    /// @modify
-    /// @date 2019/5/14 15:51
-  void startAppRootPage(){
-    Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context){
+  /// 启动首页
+  /// @return
+  /// @author lizhid
+  /// @modify
+  /// @date 2019/5/14 15:51
+  void startAppRootPage() {
+    this.stopCountDown = true;
+    Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (BuildContext context) {
       return MallRoute.getPage(ViewConst.ROUTE_COMMON_APPROOTPAGE, {});
-    }));
+    }), (route) => route == null);
   }
 }
