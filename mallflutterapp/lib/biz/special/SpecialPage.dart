@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:annotation_route/route.dart';
 import 'package:mallflutterapp/common/ViewConst.dart';
 
+/// 专题
+/// @author lizhid
+/// @version V1.0.0
+/// @date 2019/5/22
 @ARoute(url: ViewConst.ROUTE_SPECIAL_SPECIALPAGE)
 class SpecialPage extends StatefulWidget {
   dynamic option;
@@ -14,6 +18,10 @@ class SpecialPage extends StatefulWidget {
   }
 }
 
+/// 专题视图
+/// @author lizhid
+/// @version V1.0.0
+/// @date 2019/5/22
 class SpecialPagePageState extends State<SpecialPage> {
   @override
   Widget build(BuildContext context) {
