@@ -5,7 +5,6 @@
 enum RequestTypeEnum {
   /// 请求网络
   NET,
-
   /// 先请求缓存，再请求网络
   CACHE_AND_NET,
 

@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:annotation_route/route.dart';
 import 'package:mallflutterapp/common/ViewConst.dart';
+import 'package:mallflutterapp/net/ApiHost.dart';
+import 'package:mallflutterapp/net/RequestCallBack.dart';
 import 'package:mallflutterapp/net/RequestManager.dart';
+import 'package:mallflutterapp/net/RequestTypeEnum.dart';
 
 import 'WeatherRequestEntity.dart';
 
@@ -26,7 +29,7 @@ class HomePage extends StatefulWidget {
 /// @author lizhid
 /// @version V1.0.0
 /// @date 2019/5/22
-class HomePageState extends State<HomePage> {
+class HomePageState extends State<HomePage>{
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
@@ -44,11 +47,17 @@ class HomePageState extends State<HomePage> {
                   WeatherRequestEntity  entity = new WeatherRequestEntity();
                   entity.city = '深圳';
                   entity.province = '广东';
-                  RequestManager.getHttp(entity);
+                  RequestManager.executeRequest(RequestTypeEnum.NET, false, ApiHost.weather_query,null);
                 })
           ],
         ),
       ),
     );
   }
+
+
+
+}
+
+
 }

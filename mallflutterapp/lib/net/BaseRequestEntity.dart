@@ -1,11 +1,15 @@
+class BaseRequestEntity {
+  String key="26864c7ba4dd5";
 
+  BaseRequestEntity({this.key});
 
-/// 请求参数实体基础类
-/// @author lizhid
-/// @version V1.0.0
-/// @date 2019/5/23
-class BaseRequestEntity{
-  /// key
-  String key;
-  Map<String, dynamic> toJson(){}
+  BaseRequestEntity.fromJson(Map<String, dynamic> json) {    
+    this.key = json['key'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['key'] = this.key;
+    return data;
+  }
 }
