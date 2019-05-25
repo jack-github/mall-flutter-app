@@ -1,7 +1,8 @@
 class BaseRequestEntity {
+  /// key
   String key="26864c7ba4dd5";
 
-  BaseRequestEntity({this.key});
+  BaseRequestEntity({this.key = "26864c7ba4dd5"});
 
   BaseRequestEntity.fromJson(Map<String, dynamic> json) {    
     this.key = json['key'];

@@ -1,20 +1,23 @@
 import 'package:mallflutterapp/net/BaseRequestEntity.dart';
 
-/// 天气属性类
-/// @author lizhid
-/// @version V1.0.0
-/// @date 2019/5/23
-class WeatherRequestEntity extends BaseRequestEntity {
-  /// 城市
+class WeatherRequestEntity extends BaseRequestEntity{
   String city;
-
-  /// 省份
   String province;
 
-  String key = '26864c7ba4dd5';
+  WeatherRequestEntity({this.city, this.province});
 
-  Map<String, dynamic> toJson() {
-    return {"city": this.city, "province": this.province, "key": this.key};
+
+  WeatherRequestEntity.fromJson(Map<String, dynamic> json) {
+    this.city = json['city'];
+    this.province = json['province'];
+  }
+
+
+  Map<String, dynamic> toJson(){
+    final Map<String, dynamic> data = super.toJson();
+    data['city'] = this.city;
+    data['province'] = this.province;
+    return data;
   }
 
 }

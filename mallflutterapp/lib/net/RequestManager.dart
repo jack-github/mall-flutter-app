@@ -51,34 +51,29 @@ class RequestManager {
   /// @author lizhid
   /// @modify
   /// @date 2019/5/24 15:15
-  static Future<T> httpRequest(RequestTypeEnum requestType,
+  static Future<BaseResponseEntity> httpRequest(RequestTypeEnum requestType,
       bool needCache,
       String url,
       BaseRequestEntity param,
-      RequestCallBack<BaseResponseEntity> requestCallBack,
       {RequestMethodEnum methodType,
         ContentType contentType,
         Map<String, dynamic> head,
         String baseUrl,
         ResponseType responseType}) async {
-    if (responseType == null) {
-      return;
+    if (requestType == null) {
+      return null;
     }
     if (url == null) {
-      return;
+      return null;
     }
     if (param == null) {
       param = new BaseRequestEntity();
     }
-    if (requestCallBack == null) {
-      return;
-    }
-
     /// 初始化dio
-    initDio(contentType: contentType, head: head, baseUrl: baseUrl);
+    _initDio(contentType: contentType, head: head, baseUrl: baseUrl);
 
     /// 执行请求
-    executeRequestPrepare(requestType, needCache, url, param, requestCallBack,
+    _executeRequestPrepare(requestType, needCache, url, param,
         methodType: methodType);
   }
 
@@ -91,7 +86,7 @@ class RequestManager {
   /// @author lizhid
   /// @modify
   /// @date 2019/5/24 15:58
-  static void initDio({ContentType contentType,
+  static void _initDio({ContentType contentType,
     Map<String, dynamic> head,
     String baseUrl,
     ResponseType responseType}) {
@@ -121,31 +116,30 @@ class RequestManager {
   /// @author lizhid
   /// @modify
   /// @date 2019/5/24 16:48
-  static void executeRequestPrepare(RequestTypeEnum requestType,
+  static Future<BaseResponseEntity> _executeRequestPrepare(RequestTypeEnum requestType,
       bool needCache,
       String url,
       BaseRequestEntity param,
-      RequestCallBack<BaseResponseEntity> requestCallBack,
       {RequestMethodEnum methodType}) {
     switch (requestType) {
       case RequestTypeEnum.NET:
-        executeRequest(requestType, needCache, url, param, requestCallBack,
+        _executeRequest(requestType, needCache, url, param,
             methodType: methodType);
         break;
       case RequestTypeEnum.CACHE_AND_NET:
-        requestCache(url, param, requestCallBack);
-        executeRequest(requestType, needCache, url, param, requestCallBack,
+        _requestCache(url, param);
+        _executeRequest(requestType, needCache, url, param,
             methodType: methodType);
         break;
       case RequestTypeEnum.CACHE_OR_NET:
-        bool hasCache = requestCache(url, param, requestCallBack);
+        bool hasCache = _requestCache(url, param);
         if (!hasCache) {
-          executeRequest(requestType, needCache, url, param, requestCallBack,
+          _executeRequest(requestType, needCache, url, param,
               methodType: methodType);
         }
         break;
       case RequestTypeEnum.CACHE:
-        requestCache(url, param, requestCallBack);
+        _requestCache(url, param);
         break;
     }
   }
@@ -160,9 +154,8 @@ class RequestManager {
   /// @author lizhid
   /// @modify
   /// @date 2019/5/24 16:48
-  static bool requestCache(String url,
-      BaseRequestEntity param,
-      RequestCallBack<BaseResponseEntity> requestCallBack,) {
+  static bool _requestCache(String url,
+      BaseRequestEntity param) {
     ///TODO:取缓存
     return false;
   }
@@ -177,11 +170,10 @@ class RequestManager {
   /// @author lizhid
   /// @modify
   /// @date 2019/5/24 16:48
-  static void executeRequest(RequestTypeEnum requestType,
+  static Future<BaseResponseEntity> _executeRequest(RequestTypeEnum requestType,
       bool needCache,
       String url,
       BaseRequestEntity param,
-      RequestCallBack<BaseResponseEntity> requestCallBack,
       {RequestMethodEnum methodType}) async {
     /// 请求方法选择
     methodType = methodType == null ? RequestMethodEnum.POST : methodType;
@@ -191,6 +183,7 @@ class RequestManager {
     try {
       switch (methodType) {
         case RequestMethodEnum.GET:
+          print(param.toJson());
           response = await _dio.get(url, queryParameters: param.toJson());
           break;
         case RequestMethodEnum.POST:
@@ -204,20 +197,17 @@ class RequestManager {
           break;
       }
       if (response == null) {
-        requestCallBack.onError(new MallException(
-            MallExceptionTypeEnum.NET_ERROR_11, 1101, "网络繁忙，请稍后再试"), url);
-        return;
+
+        return null;
       }
 
       if (response.statusCode != HttpStatus.ok) {
-        requestCallBack.onError(new MallException(
-            MallExceptionTypeEnum.NET_ERROR_11, response.statusCode,
-            "网络繁忙，请稍后再试"), url);
+
       }
 
       /// TODO:判断服务器响应码
       if (needCache) {
-        saveCache(url, param, response.data);
+        _saveCache(url, param, response.data);
       }
 
       print(response);
@@ -234,7 +224,7 @@ class RequestManager {
   /// @author lizhid
   /// @modify
   /// @date 2019/5/24 17:30
-  static void saveCache(String url, BaseRequestEntity param,
+  static void _saveCache(String url, BaseRequestEntity param,
       String responseBody) {
     if (responseBody == null) {
       return;
