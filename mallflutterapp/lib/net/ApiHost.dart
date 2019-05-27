@@ -7,5 +7,5 @@ class ApiHost{
   /// 服务器地址
   static const String SERVER_URL = "http://apicloud.mob.com";
   /// 天气查询接口
-  static const String  weather_query = '/oil/price/province/query';
+  static const String  weather_query = '/v1/mobile/address/query';
 }

@@ -1,22 +1,19 @@
 import 'package:mallflutterapp/net/BaseRequestEntity.dart';
 
 class WeatherRequestEntity extends BaseRequestEntity{
-  String city;
-  String province;
+  String  phone;
 
-  WeatherRequestEntity({this.city, this.province});
+  WeatherRequestEntity({this.phone});
 
 
   WeatherRequestEntity.fromJson(Map<String, dynamic> json) {
-    this.city = json['city'];
-    this.province = json['province'];
+    this.phone = json['phone'];
   }
 
 
   Map<String, dynamic> toJson(){
     final Map<String, dynamic> data = super.toJson();
-    data['city'] = this.city;
-    data['province'] = this.province;
+    data['phone'] = this.phone;
     return data;
   }
 
