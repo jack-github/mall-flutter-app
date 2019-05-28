@@ -13,6 +13,8 @@ class ViewConst {
   //----------------------------------------分类---------------------------------------------------------
   // 分类主界面
   static const String ROUTE_CATEGORY_CATEGORYPAGE = "page//category/categoryPage";
+  // 分类信息列表
+  static const String ROUTE_CATEGORY_CATEGORYPAGE_LIST = "page//category/categoryPageList";
 
   //----------------------------------------专题--------------------------------------------------------
   // 专题主界面

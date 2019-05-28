@@ -74,7 +74,7 @@ class SplashPageState extends State<SplashPage> {
   /// @modify
   /// @date 2019/5/14 15:51
   void countDown() {
-    var duration = new Duration(seconds: 3);
+    var duration = new Duration(seconds: 1);
     Future.delayed(duration, () {
       if (!stopCountDown) {
         startAppRootPage();

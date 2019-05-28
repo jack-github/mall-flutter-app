@@ -13,7 +13,7 @@ import 'package:mallflutterapp/net/RequestTypeEnum.dart';
 
 import 'MobileAddressRespEntity.dart';
 import 'MobileAddressReqEntity.dart';
-import 'WeChatCategoryRespEntity.dart';
+import 'package:mallflutterapp/biz/category/WeChatCategoryRespEntity.dart';
 
 /// 首页
 /// @author lizhid
