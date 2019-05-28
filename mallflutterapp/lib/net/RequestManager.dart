@@ -1,7 +1,10 @@
+import 'dart:convert';
 import 'dart:io';
-import 'package:dio/dio.dart';
 
-import '../entity_factory.dart';
+import 'package:dio/dio.dart';
+import 'package:mallflutterapp/common/MallToast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'ApiHost.dart';
 import 'BaseRequestEntity.dart';
 import 'BaseResponseEntity.dart';
@@ -45,19 +48,24 @@ class RequestManager {
   /// @param baseUrl 服务器地址
   /// @param responseType 响应类型
   /// @param errorCallBack 请求失败回调
+  /// @param needTip true:需要提示，默认提示
+  /// @param debug true:调试模式，默认打开日志
   /// @return void
   /// @author lizhid
   /// @modify
   /// @date 2019/5/24 15:15
-  static void httpRequest<T>(RequestTypeEnum requestType, bool needCache,
-      String url, Function successCallback,
-      {BaseRequestEntity param,
+  static void httpRequest<T>(
+      RequestTypeEnum requestType, bool needCache, String url,
+      {Function successCallback,
+      BaseRequestEntity param,
       RequestMethodEnum methodType,
       ContentType contentType,
       Map<String, dynamic> head,
       String baseUrl,
       ResponseType responseType,
-      Function errorCallBack}) async {
+      Function errorCallBack,
+      bool needTip = true,
+      bool debug = true}) async {
     if (requestType == null) {
       return;
     }
@@ -69,11 +77,13 @@ class RequestManager {
     }
 
     /// 初始化dio
-    _initDio(contentType: contentType, head: head, baseUrl: baseUrl);
+    _initDio(
+        contentType: contentType, head: head, baseUrl: baseUrl, debug: debug);
 
     /// 执行请求
-    _executeRequestPrepare<T>(requestType, needCache, url, param, successCallback,
-        methodType: methodType, errorCallBack: errorCallBack);
+    _executeRequestPrepare<T>(
+        requestType, needCache, url, param, successCallback,
+        methodType: methodType, errorCallBack: errorCallBack, needTip: needTip);
   }
 
   /// 初始化dio
@@ -82,6 +92,7 @@ class RequestManager {
   /// @param baseUrl 服务器地址
   /// @param responseType 响应类型
   /// @param errorCallBack 错误回调
+  /// @param debug true:调试模式
   /// @return void
   /// @author lizhid
   /// @modify
@@ -91,7 +102,8 @@ class RequestManager {
       Map<String, dynamic> head,
       String baseUrl,
       ResponseType responseType,
-      Function errorCallBack}) {
+      Function errorCallBack,
+      bool debug}) {
     try {
       if (_dio == null) {
         _dio = new Dio();
@@ -107,6 +119,10 @@ class RequestManager {
       _dio.options.sendTimeout = 30000;
       _dio.options.receiveTimeout = 30000;
       _dio.options.contentType = contentType;
+      if (debug) {
+        _dio.interceptors.add(new LogInterceptor(
+            requestBody: true, responseBody: true, error: true));
+      }
     } catch (e) {
       _handleException(e, errorCallBack);
     }
@@ -120,6 +136,7 @@ class RequestManager {
   /// @param successCallback 请求成功回调
   /// @param methodType 请求类型
   /// @param errorCallBack 请求失败回调
+  /// @param needTip true:需要提示，默认提示
   /// @return void
   /// @author lizhid
   /// @modify
@@ -131,25 +148,35 @@ class RequestManager {
       BaseRequestEntity param,
       Function successCallback,
       {RequestMethodEnum methodType,
-      Function errorCallBack}) {
+      Function errorCallBack,
+      bool needTip}) {
     switch (requestType) {
       case RequestTypeEnum.NET:
         _executeRequest<T>(requestType, needCache, url, param, successCallback,
-            methodType: methodType, errorCallBack: errorCallBack);
+            methodType: methodType,
+            errorCallBack: errorCallBack,
+            needTip: needTip);
         break;
       case RequestTypeEnum.CACHE_AND_NET:
         _requestCache<T>(url, param, successCallback,
             errorCallBack: errorCallBack);
         _executeRequest<T>(requestType, needCache, url, param, successCallback,
-            methodType: methodType, errorCallBack: errorCallBack);
+            methodType: methodType,
+            errorCallBack: errorCallBack,
+            needTip: needTip);
         break;
       case RequestTypeEnum.CACHE_OR_NET:
-        bool hasCache = _requestCache<T>(url, param, successCallback,
-            errorCallBack: errorCallBack);
-        if (!hasCache) {
-          _executeRequest<T>(requestType, needCache, url, param, successCallback,
-              methodType: methodType, errorCallBack: errorCallBack);
-        }
+        _requestCache<T>(url, param, successCallback,
+                errorCallBack: errorCallBack)
+            .then((bool hasCache) {
+          if (!hasCache) {
+            _executeRequest<T>(
+                requestType, needCache, url, param, successCallback,
+                methodType: methodType,
+                errorCallBack: errorCallBack,
+                needTip: needTip);
+          }
+        });
         break;
       case RequestTypeEnum.CACHE:
         _requestCache<T>(url, param, successCallback,
@@ -169,12 +196,42 @@ class RequestManager {
   /// @author lizhid
   /// @modify
   /// @date 2019/5/24 16:48
-  static bool _requestCache<T>(
+  static Future<bool> _requestCache<T>(
       String url, BaseRequestEntity param, Function successCallback,
-      {Function errorCallBack}) {
-    ///TODO:取缓存
-    successCallback(null);
-    return false;
+      {Function errorCallBack}) async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    String cacheKey = _createCacheKey(url, param);
+    if (cacheKey == null) {
+      return false;
+    }
+    String cacheData = sharedPreferences.getString(cacheKey);
+    if (cacheData == null || cacheData.isEmpty) {
+      return false;
+    }
+    Map<String, dynamic> cacheMap = jsonDecode(cacheData);
+
+    /// 数据解析
+    BaseResponseEntity<T> responseEntity =
+        BaseResponseEntity.fromJson(cacheMap);
+    successCallback(responseEntity);
+    return true;
+  }
+
+  /// 创建缓存key
+  /// @param url 请求地址
+  /// @param param 参数
+  /// @return String
+  /// @author lizhid
+  /// @modify
+  /// @date 2019/5/28 11:43
+  static String _createCacheKey(String url, BaseRequestEntity param) {
+    if (url == null || url.isEmpty) {
+      return null;
+    }
+    if (param == null) {
+      return null;
+    }
+    return url + param.toJson().toString();
   }
 
   /// 请求
@@ -185,18 +242,21 @@ class RequestManager {
   /// @param successCallback 请求成功回调
   /// @param methodType 请求类型
   /// @param errorCallBack 请求失败回调
+  /// @param needTip true:需要提示，默认提示
   /// @return void
   /// @author lizhid
   /// @modify
   /// @date 2019/5/24 16:48
   static void _executeRequest<T>(RequestTypeEnum requestType, bool needCache,
       String url, BaseRequestEntity param, Function successCallback,
-      {RequestMethodEnum methodType, Function errorCallBack}) async {
+      {RequestMethodEnum methodType,
+      Function errorCallBack,
+      bool needTip}) async {
     /// 请求方法选择
     methodType = methodType == null ? RequestMethodEnum.POST : methodType;
 
     /// 响应数据
-    Response<Map<String, dynamic>> response;
+    Response response;
     try {
       switch (methodType) {
         case RequestMethodEnum.GET:
@@ -213,7 +273,8 @@ class RequestManager {
           response = await _dio.put(url, data: param.toJson());
           break;
       }
-      _handleResponse<T>(url, param, needCache, response, successCallback);
+      _handleResponse<T>(url, param, needCache, response, successCallback,
+          needTip: needTip);
     } catch (e) {
       print(e);
     }
@@ -226,35 +287,41 @@ class RequestManager {
   /// @param response 响应数据
   /// @param successCallback 请求成功回调
   /// @param errorCallBack 请求失败回调
+  /// @param needTip true:需要提示，默认提示
   /// @return T
   /// @author lizhid
   /// @modify
   /// @date 2019/5/27 14:42
   static void _handleResponse<T>(String url, BaseRequestEntity param,
       bool needCache, Response response, Function successCallback,
-      {Function errorCallBack}) {
-    if (response == null) {
+      {Function errorCallBack, bool needTip}) {
+    if (response == null || response.data == null) {
       return;
     }
     if (response.statusCode != HttpStatus.ok) {
       return;
     }
-    Map<String, dynamic> responseData = response.data;
+    String responseBody = response.data;
+    Map<String, dynamic> responseData = jsonDecode(responseBody);
     if (responseData == null) {
       return;
     }
 
     /// 判断服务器响应码
-    BaseResponseEntity<T> responseEntity = BaseResponseEntity.fromJson(responseData);
+    BaseResponseEntity<T> responseEntity =
+        BaseResponseEntity.fromJson(responseData);
     if (responseEntity != null) {
       responseEntity.requestUrl = url;
       if ("success" == responseEntity.msg) {
         if (needCache) {
-          _saveCache(url, param, responseData);
+          _saveCache(url, param, responseBody);
         }
         successCallback(responseEntity);
       } else {
         /// 请求失败
+        if (needTip) {
+          MallToast.showToast(responseEntity.msg);
+        }
       }
     }
   }
@@ -281,11 +348,20 @@ class RequestManager {
   /// @modify
   /// @date 2019/5/24 17:30
   static void _saveCache(
-      String url, BaseRequestEntity param, dynamic responseBody) {
+      String url, BaseRequestEntity param, dynamic responseBody) async {
     if (responseBody == null) {
       return;
     }
+    String cacheKey = _createCacheKey(url, param);
+    if (cacheKey == null || cacheKey.isEmpty) {
+      return;
+    }
 
-    ///TODO:保存缓存
+    String cacheData = responseBody.toString();
+    if (cacheData == null || cacheData.isEmpty) {
+      return;
+    }
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    await sharedPreferences.setString(cacheKey, cacheData);
   }
 }

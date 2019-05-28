@@ -1,8 +1,8 @@
-
-import 'dart:io';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:annotation_route/route.dart';
+import 'package:mallflutterapp/common/MallToast.dart';
 import 'package:mallflutterapp/common/ViewConst.dart';
 import 'package:mallflutterapp/net/ApiHost.dart';
 import 'package:mallflutterapp/net/BaseResponseEntity.dart';
@@ -11,8 +11,9 @@ import 'package:mallflutterapp/net/RequestManager.dart';
 import 'package:mallflutterapp/net/RequestMethodEnum.dart';
 import 'package:mallflutterapp/net/RequestTypeEnum.dart';
 
-import 'TestEntity.dart';
-import 'WeatherRequestEntity.dart';
+import 'MobileAddressRespEntity.dart';
+import 'MobileAddressReqEntity.dart';
+import 'WeChatCategoryRespEntity.dart';
 
 /// 首页
 /// @author lizhid
@@ -36,64 +37,69 @@ class HomePage extends StatefulWidget {
 /// @version V1.0.0
 /// @date 2019/5/22
 class HomePageState extends State<HomePage> {
+  /// 手机号码归属地
+  MobileAddressRespEntity _testEntity = new MobileAddressRespEntity();
+
+  /// 电话号码输入控制器
+  TextEditingController _phoneController = new TextEditingController();
+
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return new Scaffold(
-      appBar: AppBar(
-        title: Text("Home Page"),
-      ),
-      body: Center(
-        child: Column(
-          children: <Widget>[
-            new Text('Home Page'),
-            RaisedButton(
-                child: new Text('请求数据'),
-                onPressed: () {
-                  WeatherRequestEntity entity = new WeatherRequestEntity();
-                  entity.phone = '18688821047';
-
-                  RequestManager.httpRequest<TestEntity>(
-                  RequestTypeEnum.CACHE_AND_NET, false, ApiHost.weather_query,(BaseResponseEntity<TestEntity> data){
-                    if(data != null) {
-                      print("----------------@@@" + data.result.city);
-                    }else{
-                      print("----------------" + data.toString());
-                    }
-                  },param: entity,methodType: RequestMethodEnum.GET,errorCallBack: (MallException e){
-                    print(e);
-                  });
-                  print("----------------@@@@@@@@@@@@");
-                }),
-
-            RaisedButton(
-              child: new Text("测试"),
-              onPressed: () {
-                test<BaseResponseEntity>().then((BaseResponseEntity onValue) {
-                  print(onValue.toJson());
-                });
-              },
-            )
-          ],
+        appBar: AppBar(
+          title: Text("Home Page"),
         ),
-      ),
-    );
-  }
+        body: Center(
+          child: Column(
+            children: <Widget>[
+              Text('Home Page'),
+              TextField(
+                  controller: _phoneController,
+                  keyboardType: TextInputType.phone,
+                  decoration: InputDecoration(
+                      contentPadding: EdgeInsets.all(10),
+                      labelText: "请输入手机号码")),
+              RaisedButton(
+                  child: new Text('请求数据'),
+                  onPressed: () {
+                    if (_phoneController.text == null ||
+                        _phoneController.text.length < 11) {
+                      MallToast.showToast("请输入正确的手机号码");
+                      return;
+                    }
 
-  Future<T> test<T>() async {
-//    Map<String, String> json = {
-//      'key': '26864c7ba4dd5',
-//      'city': '深圳',
-//      'province': '广东'
-//    };
-//    WeatherRequestEntity w = WeatherRequestEntity.fromJson(json);
-//     print(w.toJson());
-
-        return testGet();
-  }
-
-   T testGet<T>(){
-   T baseResponseEntity = new BaseResponseEntity(msg:"test") as T;
-   return baseResponseEntity;
+                    MobileAddressReqEntity entity =
+                        new MobileAddressReqEntity();
+                    entity.phone = _phoneController.text;
+                    RequestManager.httpRequest<MobileAddressRespEntity>(
+                        RequestTypeEnum.NET, true, ApiHost.phone_address_query,
+                        param: entity,
+                        methodType: RequestMethodEnum.GET, successCallback:
+                            (BaseResponseEntity<MobileAddressRespEntity> data) {
+                      if (data != null) {
+                        setState(() {
+                          _testEntity = data.result;
+                        });
+                        print(data.toJson().toString());
+                      }
+                    }, errorCallBack: (MallException e) {
+                      print(e);
+                    });
+                  }),
+              RaisedButton(
+                child: new Text("微信精选"),
+                onPressed: () {
+                },
+              ),
+              Text("号码：${_testEntity.mobileNumber}"),
+              Text("运营商：${_testEntity.operator}"),
+              Text("地址：${_testEntity.province}${_testEntity.city}"),
+              Text("cityCode：${_testEntity.cityCode}"),
+              Text("zipCode：${_testEntity.zipCode}")
+            ],
+          ),
+        ));
   }
 }

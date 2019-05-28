@@ -1,14 +1,21 @@
-class TestEntity {
+class MobileAddressRespEntity {
   String city;
+
   String cityCode;
   String mobileNumber;
   String operator;
   String province;
   String zipCode;
 
-  TestEntity({this.city, this.cityCode, this.mobileNumber, this.operator, this.province, this.zipCode});
+  MobileAddressRespEntity(
+      {this.city = '',
+      this.cityCode = '',
+      this.mobileNumber = '',
+      this.operator = '',
+      this.province = '',
+      this.zipCode = ''});
 
-  TestEntity.fromJson(Map<String, dynamic> json) {    
+  MobileAddressRespEntity.fromJson(Map<String, dynamic> json) {
     this.city = json['city'];
     this.cityCode = json['cityCode'];
     this.mobileNumber = json['mobileNumber'];
@@ -27,5 +34,4 @@ class TestEntity {
     data['zipCode'] = this.zipCode;
     return data;
   }
-
 }

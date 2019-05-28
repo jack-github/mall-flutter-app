@@ -6,6 +6,10 @@
 class ApiHost{
   /// 服务器地址
   static const String SERVER_URL = "http://apicloud.mob.com";
-  /// 天气查询接口
-  static const String  weather_query = '/v1/mobile/address/query';
+  /// 手机号码归属地查询
+  static const String  phone_address_query = '/v1/mobile/address/query';
+  /// 微信精选分类
+  static const String  weChat_article_category = "/wx/article/category/query";
+  /// 微信精选列表
+  static const String  weChat_article_search = "/wx/article/search";
 }
