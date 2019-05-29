@@ -1,10 +1,13 @@
 class ViewConst {
-  //----------------------------------------公告页面----------------------------------------------------
+  //----------------------------------------公共页面----------------------------------------------------
   // 主页面
   static  const String ROUTE_COMMON_APPROOTPAGE = 'page//common/appRootPage';
 
   // 启动页
   static const String ROUTE_COMMON_SPLASHPAGE = 'page//common/splashPage';
+
+  // 浏览器
+  static const String ROUTE_COMMON_WEBVIEWPAGE = 'page//common/webViewPage';
 
   //----------------------------------------首页--------------------------------------------------------
   // 首页主界面

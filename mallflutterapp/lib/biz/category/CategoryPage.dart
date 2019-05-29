@@ -36,38 +36,14 @@ class CategoryPageState extends State<CategoryPage> {
   WeChatCategoryRespEntity _weChatCategoryRespEntity =
       new WeChatCategoryRespEntity();
 
-  /// 列表数量
-  int _listCount = 0;
-
   @override
   Widget build(BuildContext context) {
-
     // TODO: implement build
     return new Scaffold(
         appBar: AppBar(
-          title: Text("Category Page"),
+          title: Text("微信精选"),
         ),
-        body: ListView.builder(
-            itemExtent: 40,
-            itemCount: _listCount,
-            itemBuilder: (context, i) {
-              return ListTile(
-                title: Text(_weChatCategoryRespEntity.list[i].name),
-                trailing: Icon(
-                  Icons.keyboard_arrow_right,
-                  color: Colors.black26,
-                ),
-                onTap: () {
-                  Map<String, dynamic> bundle = new Map();
-                  bundle["cid"] = _weChatCategoryRespEntity.list[i].cid;
-                  Navigator.of(context)
-                      .push(MaterialPageRoute(builder: (BuildContext context) {
-                    return MallRoute.getPage(
-                        ViewConst.ROUTE_CATEGORY_CATEGORYPAGE_LIST, bundle);
-                  }));
-                },
-              );
-            }));
+        body: ListView(children: _createListItem()));
   }
 
   @override
@@ -75,6 +51,55 @@ class CategoryPageState extends State<CategoryPage> {
     // TODO: implement initState
     super.initState();
     _requestData();
+  }
+
+  /// 创建ListView条目
+  /// @return Widget
+  /// @author lizhid
+  /// @modify
+  /// @date 2019/5/29 8:48
+  List<Widget> _createListItem() {
+    if (_weChatCategoryRespEntity == null || _weChatCategoryRespEntity.list == null) {
+      List<Widget> titleList = new List();
+      titleList.add(new Text(''));
+      return titleList;
+    }
+    List<ListTile> titleList = new List();
+    _weChatCategoryRespEntity.list
+        .forEach((WeChatCategoryRespEntityResult result) {
+      titleList.add(_createItemWidget(result));
+    });
+    List<Widget> dividedList =
+        ListTile.divideTiles(context: context, tiles: titleList).toList();
+    return dividedList;
+  }
+
+  /// 创建条目视图
+  /// @param result 数据
+  /// @return Widget
+  /// @author lizhid
+  /// @modify
+  /// @date 2019/5/29 9:15
+  Widget _createItemWidget(WeChatCategoryRespEntityResult result) {
+    if (result == null) {
+      return null;
+    }
+    return ListTile(
+      title: Container(
+        child: Text(result.name),
+      ),
+      trailing: Container(
+          child: Icon(Icons.keyboard_arrow_right, color: Colors.black26)),
+      onTap: () {
+        Map<String, dynamic> bundle = new Map();
+        bundle["cid"] = result.cid;
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (BuildContext context) {
+          return MallRoute.getPage(
+              ViewConst.ROUTE_CATEGORY_CATEGORYPAGE_LIST, bundle);
+        }));
+      },
+    );
   }
 
   /// 请求微信精选分类
@@ -92,7 +117,6 @@ class CategoryPageState extends State<CategoryPage> {
       }
       setState(() {
         _weChatCategoryRespEntity = data.result;
-        _listCount = _weChatCategoryRespEntity.list.length;
       });
     }, errorCallBack: (MallException e) {});
   }

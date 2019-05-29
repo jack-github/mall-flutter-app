@@ -6,43 +6,47 @@
 
 import 'dart:convert';
 import 'package:annotation_route/route.dart';
-import 'package:mallflutterapp/biz/home/HomePage.dart';
 import 'package:mallflutterapp/biz/category/CategoryPage.dart';
-import 'package:mallflutterapp/test2.dart';
-import 'package:mallflutterapp/biz/category/CategoryInfoListPage.dart';
 import 'package:mallflutterapp/biz/special/SpecialPage.dart';
-import 'package:mallflutterapp/biz/common/AppRootPage.dart';
-import 'package:mallflutterapp/biz/common/SplashPage.dart';
 import 'package:mallflutterapp/biz/account/AccountPage.dart';
+import 'package:mallflutterapp/biz/common/WebViewPage.dart';
+import 'package:mallflutterapp/biz/category/CategoryInfoListPage.dart';
+import 'package:mallflutterapp/biz/common/SplashPage.dart';
+import 'package:mallflutterapp/test2.dart';
+import 'package:mallflutterapp/biz/home/HomePage.dart';
+import 'package:mallflutterapp/biz/common/AppRootPage.dart';
 import 'package:mallflutterapp/test.dart';
 
 class ARouterInternalImpl extends ARouterInternal {
   ARouterInternalImpl();
   final Map<String, List<Map<String, dynamic>>> innerRouterMap =
       <String, List<Map<String, dynamic>>>{
-    'page//home/homePage': [
-      {'clazz': HomePage}
-    ],
     'page//category/categoryPage': [
       {'clazz': CategoryPage}
-    ],
-    'page//test2': [
-      {'clazz': MyButton}
-    ],
-    'page//category/categoryPageList': [
-      {'clazz': CategoryInfoListPage}
     ],
     'page//special/specialPage': [
       {'clazz': SpecialPage}
     ],
-    'page//common/appRootPage': [
-      {'clazz': AppRootPage}
+    'page//account/accountPage': [
+      {'clazz': AccountPage}
+    ],
+    'page//common/webViewPage': [
+      {'clazz': WebViewPage}
+    ],
+    'page//category/categoryPageList': [
+      {'clazz': CategoryInfoListPage}
     ],
     'page//common/splashPage': [
       {'clazz': SplashPage}
     ],
-    'page//account/accountPage': [
-      {'clazz': AccountPage}
+    'page//test2': [
+      {'clazz': MyButton}
+    ],
+    'page//home/homePage': [
+      {'clazz': HomePage}
+    ],
+    'page//common/appRootPage': [
+      {'clazz': AppRootPage}
     ],
     'page//test': [
       {'clazz': RandomWords}
@@ -70,22 +74,24 @@ class ARouterInternalImpl extends ARouterInternal {
 
   dynamic instanceFromClazz(Type clazz, dynamic option) {
     switch (clazz) {
-      case HomePage:
-        return new HomePage(option);
       case CategoryPage:
         return new CategoryPage(option);
-      case MyButton:
-        return new MyButton(option);
-      case CategoryInfoListPage:
-        return new CategoryInfoListPage(option);
       case SpecialPage:
         return new SpecialPage(option);
-      case AppRootPage:
-        return new AppRootPage(option);
-      case SplashPage:
-        return new SplashPage(option);
       case AccountPage:
         return new AccountPage(option);
+      case WebViewPage:
+        return new WebViewPage(option);
+      case CategoryInfoListPage:
+        return new CategoryInfoListPage(option);
+      case SplashPage:
+        return new SplashPage(option);
+      case MyButton:
+        return new MyButton(option);
+      case HomePage:
+        return new HomePage(option);
+      case AppRootPage:
+        return new AppRootPage(option);
       case RandomWords:
         return new RandomWords(option);
       default:
