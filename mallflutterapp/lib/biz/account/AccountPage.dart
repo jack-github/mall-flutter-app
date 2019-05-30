@@ -9,7 +9,8 @@ import 'package:mallflutterapp/common/ViewConst.dart';
 @ARoute(url: ViewConst.ROUTE_ACCOUNT_ACCOUNTPAGE)
 class AccountPage extends StatefulWidget {
   dynamic option;
-  AccountPage(this.option):super();
+
+  AccountPage(this.option) : super();
 
   @override
   State<StatefulWidget> createState() {
@@ -27,10 +28,15 @@ class AccountPageState extends State<AccountPage> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return new Scaffold(
-      appBar: AppBar(
-        title: Text("Account Page"),
-      ),
-      body: Text("Hello AccountPage"),
-    );
+        appBar: AppBar(
+          title: Text("Account Page"),
+        ),
+        body: Container(
+            child: Expanded(
+                child: FadeInImage.assetNetwork(
+                    placeholder: "assets/images/im_splash.jpg",
+                    image:
+                        "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1559212291995&di=b7b460d7ffa346001d41775c34a630b1&imgtype=0&src=http%3A%2F%2Fimg.zcool.cn%2Fcommunity%2F01ca115542fa200000019ae98211f7.jpg",
+                    fit: BoxFit.fill))));
   }
 }

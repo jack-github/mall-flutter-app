@@ -12,6 +12,7 @@ import 'package:mallflutterapp/route/route.dart';
 
 import 'CategoryInfoListRequestEntity.dart';
 import 'CategoryInfoListRespEntity.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 /// 微信精选
 /// @author lizhid
@@ -223,10 +224,7 @@ class CategoryInfoListPageState extends State<CategoryInfoListPage> {
                   ),
                   Container(
                       margin: EdgeInsets.all(10),
-                      child: Stack(children: <Widget>[
-                          _defaultImage(),
-                        _imageLoad(result.thumbnails)
-                      ],))
+                      child: _imageLoad(result.thumbnails))
                 ],
               )
             ],
@@ -244,12 +242,7 @@ class CategoryInfoListPageState extends State<CategoryInfoListPage> {
   /// @modify
   /// @date 2019/5/30 9:54
   Widget _imageLoad(String url) {
-    Widget image = _defaultImage();
-    if (url == null || url.isEmpty) {
-      return image;
-    }
-    image = Image.network(url, width: 100, height: 100, fit: BoxFit.cover);
-    return image;
+    return FadeInImage.memoryNetwork(placeholder:kTransparentImage,image: url,width: 100, height: 100, fit: BoxFit.cover);
   }
 
   /// 默认图片

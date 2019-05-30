@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:annotation_route/route.dart';
 import 'package:mallflutterapp/common/ViewConst.dart';
 import 'package:mallflutterapp/route/route.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 /// 启动页
 /// @author lizhid
@@ -35,10 +36,10 @@ class SplashPageState extends State<SplashPage> {
       children: <Widget>[
         new Container(
           color: Colors.white,
-          child: FadeInImage.assetNetwork(
-              placeholder: "assets/images/defult_2.jpg",
+          child: FadeInImage.memoryNetwork(
+              placeholder: kTransparentImage,
               image:
-                  "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1559206932081&di=309459dadfc8d4a0781a11ae83793698&imgtype=0&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201601%2F30%2F20160130164318_umvEf.jpeg",
+                  "http://macro-oss.oss-cn-shenzhen.aliyuncs.com/mall/images/20180615/xiaomi.jpg",
               fit: BoxFit.fill),
           constraints: new BoxConstraints.expand(),
         ),
