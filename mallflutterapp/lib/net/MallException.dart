@@ -14,7 +14,7 @@ class MallException implements Exception {
   /// 错误类型
   MallExceptionTypeEnum type;
 
-  MallException(MallExceptionTypeEnum type, int code, String msg) {
+  MallException({MallExceptionTypeEnum type, int code, String msg}) {
     this.type = type;
     this.code = code;
     this.msg = msg;

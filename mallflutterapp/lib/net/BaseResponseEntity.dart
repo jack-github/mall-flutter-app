@@ -27,7 +27,12 @@ class BaseResponseEntity<T> {
     this.msg = json['msg'];
     this.resCode = json['resCode'];
     this.requestUrl = json['requestUrl'];
-    this.result = EntityFactory.generateOBJ(json['result']);
+    try {
+      this.result = EntityFactory.generateOBJ(json['result']);
+    } catch (e) {
+      this.result = json['result'];
+      print(e);
+    }
   }
 
   Map<String, dynamic> toJson() {

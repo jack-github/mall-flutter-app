@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:mallflutterapp/common/MallToast.dart';
+import 'package:mallflutterapp/net/MallException.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'ApiHost.dart';
@@ -56,14 +57,14 @@ class RequestManager {
   /// @date 2019/5/24 15:15
   static void httpRequest<T>(
       RequestTypeEnum requestType, bool needCache, String url,
-      {Function successCallback,
+      {Function(BaseResponseEntity<T>) successCallback,
       BaseRequestEntity param,
       RequestMethodEnum methodType,
       ContentType contentType,
       Map<String, dynamic> head,
       String baseUrl,
       ResponseType responseType,
-      Function errorCallBack,
+      Function(MallException) errorCallBack,
       bool needTip = true,
       bool debug = true}) async {
     if (requestType == null) {
@@ -78,7 +79,7 @@ class RequestManager {
 
     /// 初始化dio
     _initDio(
-        contentType: contentType, head: head, baseUrl: baseUrl, debug: debug);
+        contentType: contentType, head: head, baseUrl: baseUrl, debug: debug,needTip: needTip);
 
     /// 执行请求
     _executeRequestPrepare<T>(
@@ -102,7 +103,7 @@ class RequestManager {
       Map<String, dynamic> head,
       String baseUrl,
       ResponseType responseType,
-      Function errorCallBack,
+      Function(MallException) errorCallBack,bool needTip,
       bool debug}) {
     try {
       if (_dio == null) {
@@ -124,7 +125,7 @@ class RequestManager {
             requestBody: true, responseBody: true, error: true));
       }
     } catch (e) {
-      _handleException(e, errorCallBack);
+      _handleException(e, errorCallBack,needTip);
     }
   }
 
@@ -146,9 +147,9 @@ class RequestManager {
       bool needCache,
       String url,
       BaseRequestEntity param,
-      Function successCallback,
+      Function(BaseResponseEntity<T>) successCallback,
       {RequestMethodEnum methodType,
-      Function errorCallBack,
+      Function(MallException) errorCallBack,
       bool needTip}) {
     switch (requestType) {
       case RequestTypeEnum.NET:
@@ -197,8 +198,8 @@ class RequestManager {
   /// @modify
   /// @date 2019/5/24 16:48
   static Future<bool> _requestCache<T>(
-      String url, BaseRequestEntity param, Function successCallback,
-      {Function errorCallBack}) async {
+      String url, BaseRequestEntity param, Function(BaseResponseEntity<T>) successCallback,
+      {Function(MallException) errorCallBack}) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String cacheKey = _createCacheKey(url, param);
     if (cacheKey == null) {
@@ -248,9 +249,9 @@ class RequestManager {
   /// @modify
   /// @date 2019/5/24 16:48
   static void _executeRequest<T>(RequestTypeEnum requestType, bool needCache,
-      String url, BaseRequestEntity param, Function successCallback,
+      String url, BaseRequestEntity param, Function(BaseResponseEntity<T>) successCallback,
       {RequestMethodEnum methodType,
-      Function errorCallBack,
+      Function(MallException) errorCallBack,
       bool needTip}) async {
     /// 请求方法选择
     methodType = methodType == null ? RequestMethodEnum.POST : methodType;
@@ -276,7 +277,7 @@ class RequestManager {
       _handleResponse<T>(url, param, needCache, response, successCallback,
           needTip: needTip);
     } catch (e) {
-      print(e);
+      _handleException(e, errorCallBack, needTip);
     }
   }
 
@@ -293,8 +294,8 @@ class RequestManager {
   /// @modify
   /// @date 2019/5/27 14:42
   static void _handleResponse<T>(String url, BaseRequestEntity param,
-      bool needCache, Response response, Function successCallback,
-      {Function errorCallBack, bool needTip}) {
+      bool needCache, Response response, Function(BaseResponseEntity<T>) successCallback,
+      {Function(MallException) errorCallBack, bool needTip}) {
     if (response == null || response.data == null) {
       return;
     }
@@ -333,10 +334,20 @@ class RequestManager {
   /// @author lizhid
   /// @modify
   /// @date 2019/5/27 17:22
-  static void _handleException(Exception e, Function errorCallBack) {
+  static void _handleException(Exception e, Function(MallException) errorCallBack,bool needTip) {
     if (e == null) {
       return;
     }
+    MallException mallException = new MallException();
+    mallException.msg = "网络繁忙，请稍后重试！";
+    if(e is DioError){
+      DioError  dioError = e;
+    }
+    
+    if(needTip){
+      MallToast.showToast(mallException.msg);
+    }
+    errorCallBack(mallException);
   }
 
   /// 保存缓存

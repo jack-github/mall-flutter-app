@@ -35,10 +35,11 @@ class SplashPageState extends State<SplashPage> {
       children: <Widget>[
         new Container(
           color: Colors.white,
-          child: new Image.asset(
-            "assets/images/im_splash.jpg",
-            fit: BoxFit.fill,
-          ),
+          child: FadeInImage.assetNetwork(
+              placeholder: "assets/images/defult_2.jpg",
+              image:
+                  "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1559206932081&di=309459dadfc8d4a0781a11ae83793698&imgtype=0&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201601%2F30%2F20160130164318_umvEf.jpeg",
+              fit: BoxFit.fill),
           constraints: new BoxConstraints.expand(),
         ),
         new Container(
@@ -51,9 +52,7 @@ class SplashPageState extends State<SplashPage> {
                 onPressed: startAppRootPage,
                 child: Text(
                   "跳过",
-                  style: new TextStyle(
-                      color: Colors.white,
-                      fontSize: 15),
+                  style: new TextStyle(color: Colors.white, fontSize: 15),
                 ),
               ),
             ))

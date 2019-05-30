@@ -53,6 +53,12 @@ class CategoryInfoListPageState extends State<CategoryInfoListPage> {
   /// 加载更改
   bool _hasMore = false;
 
+  ///  页面条目数量
+  int _pageSize = 20;
+
+  /// 加载失败
+  bool _loadFail = false;
+
   CategoryInfoListPageState(this.option) : super();
 
   @override
@@ -65,6 +71,10 @@ class CategoryInfoListPageState extends State<CategoryInfoListPage> {
                 controller: _scrollController,
                 itemCount: _itemCount + 1,
                 itemBuilder: (context, index) {
+                  if (_categoryInfoListRespEntity == null ||
+                      _categoryInfoListRespEntity.xList == null) {
+                    return null;
+                  }
                   if (index == _itemCount) {
                     return _buildProgressIndicator();
                   }
@@ -89,7 +99,7 @@ class CategoryInfoListPageState extends State<CategoryInfoListPage> {
             new CategoryInfoListRequestEntity();
         param.cid = option.bundle['cid'];
         param.page = _categoryInfoListRespEntity.curPage + 1;
-        param.size = 20;
+        param.size = _pageSize;
         _requestData(param, true);
       }
     });
@@ -114,7 +124,7 @@ class CategoryInfoListPageState extends State<CategoryInfoListPage> {
     CategoryInfoListRequestEntity param = new CategoryInfoListRequestEntity();
     param.cid = option.bundle['cid'];
     param.page = 1;
-    param.size = 20;
+    param.size = _pageSize;
     _requestData(param, false);
   }
 
@@ -138,11 +148,15 @@ class CategoryInfoListPageState extends State<CategoryInfoListPage> {
 
   // 加载中的提示
   Widget _buildLoadText() {
+    String msg = "数据没有更多了！！！";
+    if(_loadFail){
+      msg = "加载失败,请稍后重试！！！";
+    }
     return Container(
         child: Padding(
       padding: const EdgeInsets.all(18.0),
       child: Center(
-        child: Text("数据没有更多了！！！"),
+        child: Text(msg),
       ),
     ));
   }
@@ -186,7 +200,7 @@ class CategoryInfoListPageState extends State<CategoryInfoListPage> {
     }
     return ListTile(
       title: Card(
-          elevation: 10,
+          elevation: 4,
           child: Column(
             children: <Widget>[
               Row(
@@ -208,10 +222,11 @@ class CategoryInfoListPageState extends State<CategoryInfoListPage> {
                     ),
                   ),
                   Container(
-                    margin: EdgeInsets.all(10),
-                    child: Image.network(result.thumbnails,
-                        width: 100, height: 100, fit: BoxFit.cover),
-                  )
+                      margin: EdgeInsets.all(10),
+                      child: Stack(children: <Widget>[
+                          _defaultImage(),
+                        _imageLoad(result.thumbnails)
+                      ],))
                 ],
               )
             ],
@@ -220,6 +235,31 @@ class CategoryInfoListPageState extends State<CategoryInfoListPage> {
         _onItemClick(result);
       },
     );
+  }
+
+  /// 设置加载失败默认图
+  /// @param url
+  /// @return Widget
+  /// @author lizhid
+  /// @modify
+  /// @date 2019/5/30 9:54
+  Widget _imageLoad(String url) {
+    Widget image = _defaultImage();
+    if (url == null || url.isEmpty) {
+      return image;
+    }
+    image = Image.network(url, width: 100, height: 100, fit: BoxFit.cover);
+    return image;
+  }
+
+  /// 默认图片
+  /// @return Widget
+  /// @author lizhid
+  /// @modify
+  /// @date 2019/5/30 10:52
+  Widget _defaultImage() {
+    return Image.asset("assets/images/defult_1.jpg",
+        width: 100, height: 100, fit: BoxFit.cover);
   }
 
   /// 条目点击时间
@@ -256,15 +296,20 @@ class CategoryInfoListPageState extends State<CategoryInfoListPage> {
       if (!_isLoading) {
         setState(() {
           _isLoading = true;
+          _loadFail = false;
         });
       } else {
         return;
       }
     }
 
+    /// 请求类型
+    RequestTypeEnum requestType =
+        loadMore ? RequestTypeEnum.NET : RequestTypeEnum.CACHE_AND_NET;
+
     /// 请求数据
     RequestManager.httpRequest<CategoryInfoListRespEntity>(
-        RequestTypeEnum.NET, true, ApiHost.weChat_article_search,
+        requestType, true, ApiHost.weChat_article_search,
         param: param, methodType: RequestMethodEnum.GET,
         successCallback: (BaseResponseEntity<CategoryInfoListRespEntity> data) {
       if (data == null) {
@@ -279,9 +324,17 @@ class CategoryInfoListPageState extends State<CategoryInfoListPage> {
           _categoryInfoListRespEntity.xList.addAll(data.result.xList);
         }
         _itemCount = _categoryInfoListRespEntity.xList.length;
-        _hasMore = _categoryInfoListRespEntity.curPage <
+        _hasMore = _categoryInfoListRespEntity.curPage * _pageSize <
             _categoryInfoListRespEntity.total;
       });
-    }, errorCallBack: (MallException e) {});
+    }, errorCallBack: (MallException e) {
+      if (e != null) {
+        setState(() {
+          _isLoading = false;
+          _hasMore = false;
+          _loadFail = true;
+        });
+      }
+    });
   }
 }

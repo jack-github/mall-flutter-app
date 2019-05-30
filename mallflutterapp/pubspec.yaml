@@ -30,7 +30,7 @@ dependencies:
   # 网络请求框架
   dio: ^2.1.5
   # toast 提示
-  fluttertoast: ^2.2.11
+  fluttertoast: ^3.1.0
   # 数据存储
   shared_preferences: ^0.5.2+1
   # webview

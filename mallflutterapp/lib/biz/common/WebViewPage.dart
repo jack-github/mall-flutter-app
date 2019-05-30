@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:annotation_route/route.dart';
 import 'package:mallflutterapp/common/ViewConst.dart';
+import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 
 /// 浏览器页面
 /// @author lizhid
@@ -37,12 +38,7 @@ class WebViewPageState extends State<WebViewPage> {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(_title),
-      ),
-      body: Text(""),
-    );
+    return WebviewScaffold(url: _url, appBar: AppBar(title: Text(_title)));
   }
 
   @override
