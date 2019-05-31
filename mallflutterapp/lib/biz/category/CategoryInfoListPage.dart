@@ -242,7 +242,12 @@ class CategoryInfoListPageState extends State<CategoryInfoListPage> {
   /// @modify
   /// @date 2019/5/30 9:54
   Widget _imageLoad(String url) {
-    return FadeInImage.memoryNetwork(placeholder:kTransparentImage,image: url,width: 100, height: 100, fit: BoxFit.cover);
+    Widget image = _defaultImage();
+    if (url == null || url.isEmpty) {
+      return image;
+    }
+    image = FadeInImage.memoryNetwork(placeholder: kTransparentImage, image: url, width: 100, height: 100, fit: BoxFit.cover);
+    return image;
   }
 
   /// 默认图片
