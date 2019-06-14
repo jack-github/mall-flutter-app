@@ -54,6 +54,9 @@ class HomePageState extends State<HomePage> {
   /// banner控件列表
   List<Widget> _bannerItemList = new List();
 
+  /// banner指示点控件列表
+  List<Widget> _bannerPonitList = new List();
+
   /// 图片数量
   int _imageCount = 0;
 
@@ -86,6 +89,7 @@ class HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     initBannerItem();
+    _updateBannerPoint(0);
     restartTimer();
   }
 
@@ -97,7 +101,7 @@ class HomePageState extends State<HomePage> {
   void restartTimer() {
     clearTimer();
     _timer =
-        new Timer.periodic(new Duration(milliseconds: 2000), (Timer timer) {
+        new Timer.periodic(new Duration(milliseconds: 5000), (Timer timer) {
       if (pageController.positions.isNotEmpty) {
         _index = pageController.page.round() + 1;
         pageController.animateToPage(_index,
@@ -105,6 +109,42 @@ class HomePageState extends State<HomePage> {
         setState(() {});
       }
     });
+  }
+
+  /// 更新指示点
+  /// @return void
+  /// @author lizhid
+  /// @modify
+  /// @date 2019/6/14 17:15
+  void _updateBannerPoint(int index) {
+    if (_bannerPonitList == null) {
+      return;
+    }
+    int itemSize = _bannerItemList.length;
+    if ( index < 0 ||index >= itemSize) {
+      return;
+    }
+    _bannerPonitList[index] = _createBannerPoint(false);
+    if (index == 0) {
+      _bannerPonitList[itemSize - 2] = _createBannerPoint(true);
+    } else {
+      _bannerPonitList[index - 1] = _createBannerPoint(true);
+    }
+  }
+
+  /// 创建指示点
+  /// @param index 位置
+  /// @return Widget
+  /// @author lizhid
+  /// @modify
+  /// @date 2019/6/14 8:51
+  Widget _createBannerPoint(bool nomal) {
+    return Container(
+        margin: EdgeInsets.only(left: 10),
+        width: 10,
+        height: 10,
+        decoration: BoxDecoration(
+            shape: BoxShape.circle, color: nomal ? Colors.grey[400] : Colors.white));
   }
 
   /// 清空计时器
@@ -130,6 +170,7 @@ class HomePageState extends State<HomePage> {
     }
     for (int i = 0; i < _imageList.length; i++) {
       _bannerItemList.add(_createPageViewItem(i));
+      _bannerPonitList.add(_createBannerPoint(true));
     }
   }
 
@@ -235,14 +276,19 @@ class HomePageState extends State<HomePage> {
               controller: pageController,
               physics: const PageScrollPhysics(
                   parent: const ClampingScrollPhysics()),
-              itemCount: 0x7fffffff,
               onPageChanged: (index) {
                 _index = index;
+                int pointIndex = index % _bannerItemList.length;
+                print("---------"+pointIndex.toString());
+                _updateBannerPoint(pointIndex);
               }),
           Align(
               alignment: Alignment.bottomCenter,
               child: Container(
-                  padding: EdgeInsets.only(bottom: 10), child: Text("占位")))
+                  padding: EdgeInsets.only(bottom: 10),
+                  child: Row(
+                    children: _bannerPonitList,
+                  )))
         ]));
   }
 
@@ -258,11 +304,18 @@ class HomePageState extends State<HomePage> {
         _imageList[index],
         fit: BoxFit.cover,
       ),
-      onTapDown: (TapDownDetails details) {},
+      onTapDown: (TapDownDetails details) {
+        clearTimer();
+      },
       onTap: () {
         MallToast.showToast("点击了" + index.toString());
       },
-      onTapUp: (TapUpDetails details) {},
+      onTapCancel: () {
+        restartTimer();
+      },
+      onTapUp: (TapUpDetails details) {
+        restartTimer();
+      },
     );
   }
 
