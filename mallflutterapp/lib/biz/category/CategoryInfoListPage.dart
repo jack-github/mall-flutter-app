@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:mallflutterapp/common/MallToast.dart';
 import 'package:mallflutterapp/common/ViewConst.dart';
 import 'package:mallflutterapp/net/ApiHost.dart';
-import 'package:mallflutterapp/net/BaseResponseEntity.dart';
+import 'package:mallflutterapp/net/BaseResponseEntity2.dart';
 import 'package:mallflutterapp/net/MallException.dart';
-import 'package:mallflutterapp/net/RequestManager.dart';
+import 'package:mallflutterapp/net/RequestManager2.dart';
 import 'package:mallflutterapp/net/RequestMethodEnum.dart';
 import 'package:mallflutterapp/net/RequestTypeEnum.dart';
 import 'package:mallflutterapp/route/route.dart';
@@ -306,10 +306,10 @@ class CategoryInfoListPageState extends State<CategoryInfoListPage> {
         loadMore ? RequestTypeEnum.NET : RequestTypeEnum.CACHE_AND_NET;
 
     /// 请求数据
-    RequestManager.httpRequest<CategoryInfoListRespEntity>(
+    RequestManager2.httpRequest(
         requestType, true, ApiHost.weChat_article_search,
         param: param, methodType: RequestMethodEnum.GET,
-        successCallback: (BaseResponseEntity<CategoryInfoListRespEntity> data) {
+        successCallback: (BaseResponseEntity2<CategoryInfoListRespEntity> data) {
       if (data == null) {
         return;
       }

@@ -8,7 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'ApiHost.dart';
 import 'BaseRequestEntity.dart';
-import 'BaseResponseEntity.dart';
+import 'BaseResponseEntity2.dart';
 import 'RequestMethodEnum.dart';
 import 'RequestTypeEnum.dart';
 
@@ -16,7 +16,7 @@ import 'RequestTypeEnum.dart';
 /// @author lizhid
 /// @version V1.0.0
 /// @date 2019/5/23
-class RequestManager {
+class RequestManager2 {
   /// 网络请求类
   static Dio _dio;
 
@@ -57,7 +57,7 @@ class RequestManager {
   /// @date 2019/5/24 15:15
   static void httpRequest<T>(
       RequestTypeEnum requestType, bool needCache, String url,
-      {Function(BaseResponseEntity<T>) successCallback,
+      {Function(BaseResponseEntity2<T>) successCallback,
       BaseRequestEntity param,
       RequestMethodEnum methodType,
       ContentType contentType,
@@ -112,7 +112,7 @@ class RequestManager {
       if (head == null) {
         head = new Map<String, dynamic>();
       }
-      baseUrl = baseUrl == null ? ApiHost.SERVER_URL : baseUrl;
+      baseUrl = baseUrl == null ? ApiHost.SERVER_URL2 : baseUrl;
       contentType = contentType == null ? ContentType.json : contentType;
       responseType = responseType == null ? ResponseType.json : responseType;
       _dio.options.baseUrl = baseUrl;
@@ -147,7 +147,7 @@ class RequestManager {
       bool needCache,
       String url,
       BaseRequestEntity param,
-      Function(BaseResponseEntity<T>) successCallback,
+      Function(BaseResponseEntity2<T>) successCallback,
       {RequestMethodEnum methodType,
       Function(MallException) errorCallBack,
       bool needTip}) {
@@ -198,7 +198,7 @@ class RequestManager {
   /// @modify
   /// @date 2019/5/24 16:48
   static Future<bool> _requestCache<T>(
-      String url, BaseRequestEntity param, Function(BaseResponseEntity<T>) successCallback,
+      String url, BaseRequestEntity param, Function(BaseResponseEntity2<T>) successCallback,
       {Function(MallException) errorCallBack}) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     String cacheKey = _createCacheKey(url, param);
@@ -212,8 +212,8 @@ class RequestManager {
     Map<String, dynamic> cacheMap = jsonDecode(cacheData);
 
     /// 数据解析
-    BaseResponseEntity<T> responseEntity =
-        BaseResponseEntity.fromJson(cacheMap);
+    BaseResponseEntity2<T> responseEntity =
+        BaseResponseEntity2.fromJson(cacheMap);
     successCallback(responseEntity);
     return true;
   }
@@ -249,7 +249,7 @@ class RequestManager {
   /// @modify
   /// @date 2019/5/24 16:48
   static void _executeRequest<T>(RequestTypeEnum requestType, bool needCache,
-      String url, BaseRequestEntity param, Function(BaseResponseEntity<T>) successCallback,
+      String url, BaseRequestEntity param, Function(BaseResponseEntity2<T>) successCallback,
       {RequestMethodEnum methodType,
       Function(MallException) errorCallBack,
       bool needTip}) async {
@@ -294,7 +294,7 @@ class RequestManager {
   /// @modify
   /// @date 2019/5/27 14:42
   static void _handleResponse<T>(String url, BaseRequestEntity param,
-      bool needCache, Response response, Function(BaseResponseEntity<T>) successCallback,
+      bool needCache, Response response, Function(BaseResponseEntity2<T>) successCallback,
       {Function(MallException) errorCallBack, bool needTip}) {
     if (response == null || response.data == null) {
       return;
@@ -309,11 +309,11 @@ class RequestManager {
     }
 
     /// 判断服务器响应码
-    BaseResponseEntity<T> responseEntity =
-        BaseResponseEntity.fromJson(responseData);
+    BaseResponseEntity2<T> responseEntity =
+        BaseResponseEntity2.fromJson(responseData);
     if (responseEntity != null) {
       responseEntity.requestUrl = url;
-      if (responseEntity.code == 200) {
+      if ("success" == responseEntity.msg) {
         if (needCache) {
           _saveCache(url, param, responseBody);
         }
@@ -321,7 +321,7 @@ class RequestManager {
       } else {
         /// 请求失败
         if (needTip) {
-          MallToast.showToast(responseEntity.message);
+          MallToast.showToast(responseEntity.msg);
         }
       }
     }

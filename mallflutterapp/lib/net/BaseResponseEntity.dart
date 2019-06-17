@@ -5,43 +5,36 @@ import '../entity_factory.dart';
 /// @version V1.0.0
 /// @date 2019/5/25
 class BaseResponseEntity<T> {
-  /// 状态信息 success：成功
-  String status;
-
-  /// 响应提示
-  String msg;
-
-  /// 响应码 0：成功
-  int resCode;
-
+  /// 响应码 200：成功
+  int code;
   /// 数据内容
-  T result;
+  T data;
+  /// 响应提示
+  String message;
 
   /// 请求地址
   String requestUrl;
 
-  BaseResponseEntity({this.status, this.msg, this.resCode,this.result,this.requestUrl});
+  BaseResponseEntity({this.code, this.data, this.message,this.requestUrl});
 
   BaseResponseEntity.fromJson(Map<String, dynamic> json) {
-    this.status = json['status'];
-    this.msg = json['msg'];
-    this.resCode = json['resCode'];
+    this.code = json['code'];
+    this.message = json['message'];
     this.requestUrl = json['requestUrl'];
     try {
-      this.result = EntityFactory.generateOBJ(json['result']);
+      this.data = EntityFactory.generateOBJ(json['data']);
     } catch (e) {
-      this.result = json['result'];
+      this.data = json['data'];
       print(e);
     }
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['status'] = this.status;
-    data['msg'] = this.msg;
-    data['resCode'] = this.resCode;
+    data['code'] = this.code;
+    data['message'] = this.message;
     data['requestUrl'] = this.requestUrl;
-    data['result'] = this.result;
+    data['data'] = this.data;
     return data;
   }
 }

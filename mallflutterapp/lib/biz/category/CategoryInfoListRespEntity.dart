@@ -1,6 +1,6 @@
-import 'package:mallflutterapp/net/BaseResponseEntity.dart';
+import 'package:mallflutterapp/net/BaseResponseEntity2.dart';
 
-class CategoryInfoListRespEntity extends BaseResponseEntity{
+class CategoryInfoListRespEntity extends BaseResponseEntity2{
 	int total;
 	int curPage;
 	List<CategoryInfoListRespEntityList> xList;

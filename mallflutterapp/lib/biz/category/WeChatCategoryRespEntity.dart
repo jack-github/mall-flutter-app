@@ -1,10 +1,10 @@
-import 'package:mallflutterapp/net/BaseResponseEntity.dart';
+import 'package:mallflutterapp/net/BaseResponseEntity2.dart';
 
 /// 微信精选响应实体
 /// @author lizhid
 /// @version V1.0.0
 /// @date 2019/5/28
-class WeChatCategoryRespEntity extends BaseResponseEntity {
+class WeChatCategoryRespEntity extends BaseResponseEntity2 {
   /// 分类列表
   List<WeChatCategoryRespEntityResult> list;
 

@@ -3,9 +3,9 @@ import 'package:annotation_route/route.dart';
 import 'package:mallflutterapp/biz/category/WeChatCategoryRespEntity.dart';
 import 'package:mallflutterapp/common/ViewConst.dart';
 import 'package:mallflutterapp/net/ApiHost.dart';
-import 'package:mallflutterapp/net/BaseResponseEntity.dart';
+import 'package:mallflutterapp/net/BaseResponseEntity2.dart';
 import 'package:mallflutterapp/net/MallException.dart';
-import 'package:mallflutterapp/net/RequestManager.dart';
+import 'package:mallflutterapp/net/RequestManager2.dart';
 import 'package:mallflutterapp/net/RequestMethodEnum.dart';
 import 'package:mallflutterapp/net/RequestTypeEnum.dart';
 import 'package:mallflutterapp/route/route.dart';
@@ -108,10 +108,10 @@ class CategoryPageState extends State<CategoryPage> {
   /// @modify
   /// @date 2019/5/28 19:26
   void _requestData() {
-    RequestManager.httpRequest<WeChatCategoryRespEntity>(
+    RequestManager2.httpRequest(
         RequestTypeEnum.CACHE_AND_NET, true, ApiHost.weChat_article_category,
         methodType: RequestMethodEnum.GET,
-        successCallback: (BaseResponseEntity<WeChatCategoryRespEntity> data) {
+        successCallback: (BaseResponseEntity2<WeChatCategoryRespEntity> data) {
       if (data == null) {
         return;
       }

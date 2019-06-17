@@ -5,10 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:annotation_route/route.dart';
 import 'package:mallflutterapp/common/MallToast.dart';
 import 'package:mallflutterapp/common/ViewConst.dart';
+import 'package:mallflutterapp/common/widget/BannerView.dart';
+import 'package:mallflutterapp/data/home/HomeRequest.dart';
+import 'package:mallflutterapp/data/home/model/ContentRespEntity.dart';
 import 'package:mallflutterapp/net/ApiHost.dart';
 import 'package:mallflutterapp/net/BaseResponseEntity.dart';
+import 'package:mallflutterapp/net/BaseResponseEntity2.dart';
 import 'package:mallflutterapp/net/MallException.dart';
-import 'package:mallflutterapp/net/RequestManager.dart';
+import 'package:mallflutterapp/net/RequestManager2.dart';
 import 'package:mallflutterapp/net/RequestMethodEnum.dart';
 import 'package:mallflutterapp/net/RequestTypeEnum.dart';
 
@@ -38,11 +42,6 @@ class HomePage extends StatefulWidget {
 /// @version V1.0.0
 /// @date 2019/5/22
 class HomePageState extends State<HomePage> {
-  /// 手机号码归属地
-  MobileAddressRespEntity _testEntity = new MobileAddressRespEntity();
-
-  /// 电话号码输入控制器
-  TextEditingController _phoneController = new TextEditingController();
 
   /// 图片列表
   List<String> _imageList = [
@@ -51,127 +50,51 @@ class HomePageState extends State<HomePage> {
     "http://macro-oss.oss-cn-shenzhen.aliyuncs.com/mall/images/20181113/car_ad2.jpg"
   ];
 
-  /// banner控件列表
-  List<Widget> _bannerItemList = new List();
+  /// 首页数据
+  ContentRespEntity _contentRespEntity = null;
 
-  /// banner指示点控件列表
-  List<Widget> _bannerPonitList = new List();
-
-  /// 图片数量
-  int _imageCount = 0;
-
-  /// pageView滚动控制器
-  PageController pageController = new PageController();
-
-  /// 定时器
-  Timer _timer;
-
-  /// 当前位置
-  int _index = 0;
 
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return new Scaffold(
-      body: Column(
-        children: <Widget>[
-          _createTileBar(),
-          _createPageView(),
-          _createOperateMenu(),
-          _crateLine(Colors.grey, 400),
-          _createBroadcastWidget(),
-        ],
-      ),
+      body: SingleChildScrollView(child: Container(
+          color: Colors.grey[200],
+          child: Column(
+            children: <Widget>[
+              _createTileBar(),
+              _createBannerView(),
+              _createOperateMenu(),
+              _crateLine(Colors.grey, 400),
+              _createBroadcastWidget(),
+              _crateLine(Colors.grey, 400),
+            ],
+          ))),
     );
+  }
+
+  /// 创建banner视图
+  /// @param
+  /// @return Widget
+  /// @author lizhid
+  /// @modify
+  /// @date 2019/6/17 14:22
+  Widget _createBannerView() {
+    List<BannerItemBean> dataList = new List();
+    _imageList.forEach((String imagePath) {
+      BannerItemBean bannerItemBean = new BannerItemBean(imagePath);
+      dataList.add(bannerItemBean);
+    });
+    return BannerView(dataList,
+        onBannerItemClick: (int position, BannerItemBean bannerItemBean) {
+      MallToast.showToast("点击了" + position.toString());
+    });
   }
 
   @override
   void initState() {
     super.initState();
-    initBannerItem();
-    _updateBannerPoint(0);
-    restartTimer();
-  }
-
-  /// 开始倒计时
-  /// @return void
-  /// @author lizhid
-  /// @modify
-  /// @date 2019/6/13 20:16
-  void restartTimer() {
-    clearTimer();
-    _timer =
-        new Timer.periodic(new Duration(milliseconds: 5000), (Timer timer) {
-      if (pageController.positions.isNotEmpty) {
-        _index = pageController.page.round() + 1;
-        pageController.animateToPage(_index,
-            duration: new Duration(milliseconds: 400), curve: Curves.linear);
-        setState(() {});
-      }
-    });
-  }
-
-  /// 更新指示点
-  /// @return void
-  /// @author lizhid
-  /// @modify
-  /// @date 2019/6/14 17:15
-  void _updateBannerPoint(int index) {
-    if (_bannerPonitList == null) {
-      return;
-    }
-    int itemSize = _bannerItemList.length;
-    if ( index < 0 ||index >= itemSize) {
-      return;
-    }
-    _bannerPonitList[index] = _createBannerPoint(false);
-    if (index == 0) {
-      _bannerPonitList[itemSize - 2] = _createBannerPoint(true);
-    } else {
-      _bannerPonitList[index - 1] = _createBannerPoint(true);
-    }
-  }
-
-  /// 创建指示点
-  /// @param index 位置
-  /// @return Widget
-  /// @author lizhid
-  /// @modify
-  /// @date 2019/6/14 8:51
-  Widget _createBannerPoint(bool nomal) {
-    return Container(
-        margin: EdgeInsets.only(left: 10),
-        width: 10,
-        height: 10,
-        decoration: BoxDecoration(
-            shape: BoxShape.circle, color: nomal ? Colors.grey[400] : Colors.white));
-  }
-
-  /// 清空计时器
-  /// @return void
-  /// @author lizhid
-  /// @modify
-  /// @date 2019/6/13 20:09
-  void clearTimer() {
-    if (_timer != null) {
-      _timer.cancel();
-      _timer = null;
-    }
-  }
-
-  /// 初始化 banner条目
-  /// @return void
-  /// @author lizhid
-  /// @modify
-  /// @date 2019/6/13 19:40
-  void initBannerItem() {
-    if (_imageList == null) {
-      return;
-    }
-    for (int i = 0; i < _imageList.length; i++) {
-      _bannerItemList.add(_createPageViewItem(i));
-      _bannerPonitList.add(_createBannerPoint(true));
-    }
+    requestHomeContent();
   }
 
   /// 划线
@@ -192,6 +115,7 @@ class HomePageState extends State<HomePage> {
   /// @date 2019/6/13 15:23
   Widget _createTileBar() {
     return Container(
+      color: Colors.white,
       height: 70,
       padding: EdgeInsets.only(top: 20),
       child: Stack(
@@ -260,65 +184,6 @@ class HomePageState extends State<HomePage> {
     );
   }
 
-  /// 创建pageView
-  /// @return Widget
-  /// @author lizhid
-  /// @modify
-  /// @date 2019/5/30 13:44
-  Widget _createPageView() {
-    return Container(
-        height: 200,
-        child: Stack(children: <Widget>[
-          PageView.builder(
-              itemBuilder: (context, index) {
-                return _bannerItemList[index % _bannerItemList.length];
-              },
-              controller: pageController,
-              physics: const PageScrollPhysics(
-                  parent: const ClampingScrollPhysics()),
-              onPageChanged: (index) {
-                _index = index;
-                int pointIndex = index % _bannerItemList.length;
-                print("---------"+pointIndex.toString());
-                _updateBannerPoint(pointIndex);
-              }),
-          Align(
-              alignment: Alignment.bottomCenter,
-              child: Container(
-                  padding: EdgeInsets.only(bottom: 10),
-                  child: Row(
-                    children: _bannerPonitList,
-                  )))
-        ]));
-  }
-
-  /// 创建条目
-  /// @param index
-  /// @return Widget
-  /// @author lizhid
-  /// @modify
-  /// @date 2019/5/30 11:53
-  Widget _createPageViewItem(int index) {
-    return GestureDetector(
-      child: Image.network(
-        _imageList[index],
-        fit: BoxFit.cover,
-      ),
-      onTapDown: (TapDownDetails details) {
-        clearTimer();
-      },
-      onTap: () {
-        MallToast.showToast("点击了" + index.toString());
-      },
-      onTapCancel: () {
-        restartTimer();
-      },
-      onTapUp: (TapUpDetails details) {
-        restartTimer();
-      },
-    );
-  }
-
   /// 操作菜单
   /// @return Widget
   /// @author lizhid
@@ -327,6 +192,8 @@ class HomePageState extends State<HomePage> {
   Widget _createOperateMenu() {
     double itemWidth = 90;
     return Container(
+      padding: EdgeInsets.only(top: 10, bottom: 10),
+      color: Colors.white,
       child: Row(
         children: <Widget>[
           Container(
@@ -399,7 +266,6 @@ class HomePageState extends State<HomePage> {
               ))
         ],
       ),
-      margin: EdgeInsets.only(top: 10, bottom: 10),
     );
   }
 
@@ -410,7 +276,8 @@ class HomePageState extends State<HomePage> {
   /// @date 2019/6/13 17:26
   Widget _createBroadcastWidget() {
     return Container(
-        margin: EdgeInsets.only(top: 10),
+        color: Colors.white,
+        padding: EdgeInsets.only(top: 10, bottom: 10),
         child: Stack(children: <Widget>[
           Align(
               alignment: Alignment.centerLeft,
@@ -418,7 +285,43 @@ class HomePageState extends State<HomePage> {
                 margin: EdgeInsets.only(left: 20),
                 child: Image.asset("assets/images/icon_broadcast.png"),
               )),
-          Center(child: Text("广播通知"))
+          Center(child: Text("广播通知")),
+          Container(
+              margin: EdgeInsets.only(right: 20),
+              child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Container(
+                      height: 25,
+                      child: GestureDetector(
+                        child: Container(
+                          padding: EdgeInsets.only(
+                              left: 5, right: 5, top: 3, bottom: 3),
+                          child: Text('详情',
+                              style:
+                                  TextStyle(color: Colors.green, fontSize: 13)),
+                        ),
+                        onTap: () {
+                          MallToast.showToast("查看详情");
+                        },
+                      ),
+                      decoration: BoxDecoration(
+                          border: Border.all(color: Colors.green),
+                          borderRadius: BorderRadius.all(Radius.circular(5))))))
         ]));
   }
+
+
+    /// 请求首页数据
+    /// @return void
+    /// @author lizhid
+    /// @modify
+    /// @date 2019/6/17 19:26
+  void requestHomeContent(){
+    HomeRequest.requestContent((BaseResponseEntity<ContentRespData> data){
+
+    }, (MallException e){
+
+    });
+  }
+
 }
