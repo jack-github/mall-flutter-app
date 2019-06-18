@@ -43,12 +43,13 @@ class BannerView extends StatefulWidget {
 
   /// 点击回调
   OnBannerItemClick onBannerItemClick;
+
   /// banner控件state
   BannerViewState _bannerViewState;
 
   BannerView(this.dataList,
       {this.bannerHeight = 200,
-      this.waitMillisecondsTime = 3000,
+      this.waitMillisecondsTime = 4000,
       this.scrollMillisecondsTime = 400,
       this.onBannerItemClick})
       : super();
@@ -65,8 +66,8 @@ class BannerView extends StatefulWidget {
   /// @author lizhid
   /// @modify
   /// @date 2019/6/18 16:03
-  void updateBannerData(List<BannerItemBean> dataList){
-    if(_bannerViewState == null){
+  void updateBannerData(List<BannerItemBean> dataList) {
+    if (_bannerViewState == null) {
       return;
     }
     _bannerViewState.updateBannerData(dataList);
@@ -104,7 +105,7 @@ class BannerViewState extends State<BannerView> {
   /// @author lizhid
   /// @modify
   /// @date 2019/6/18 16:36
-  void updateBannerData(List<BannerItemBean> dataList){
+  void updateBannerData(List<BannerItemBean> dataList) {
     setState(() {
       widget.dataList = dataList;
       _updateBannerView();
@@ -116,7 +117,7 @@ class BannerViewState extends State<BannerView> {
   /// @author lizhid
   /// @modify
   /// @date 2019/6/18 15:57
-  void _updateBannerView(){
+  void _updateBannerView() {
     _initBannerItem();
     _updateBannerPoint(0);
     _restartTimer();
@@ -207,10 +208,10 @@ class BannerViewState extends State<BannerView> {
     if (widget.dataList == null) {
       return;
     }
-    if( widget._bannerItemList.length > 0){
+    if (widget._bannerItemList.length > 0) {
       widget._bannerItemList.clear();
     }
-    if( widget._bannerPointList.length > 0){
+    if (widget._bannerPointList.length > 0) {
       widget._bannerPointList.clear();
     }
     for (int i = 0; i < widget.dataList.length; i++) {
@@ -239,7 +240,8 @@ class BannerViewState extends State<BannerView> {
                   parent: const ClampingScrollPhysics()),
               onPageChanged: (index) {
                 widget._selectIndex = index;
-                if(widget._bannerItemList != null) {
+                if (widget._bannerItemList != null &&
+                    widget._bannerItemList.length > 0) {
                   int pointIndex = index % widget._bannerItemList.length;
                   print("---------" + pointIndex.toString());
                   _updateBannerPoint(pointIndex);
@@ -263,27 +265,29 @@ class BannerViewState extends State<BannerView> {
   /// @modify
   /// @date 2019/5/30 11:53
   Widget _createPageViewItem(int index) {
-    return InkWell(
-      child: FadeInImage.memoryNetwork(
-        image: widget.dataList[index]._imagePath,
-        placeholder: kTransparentImage,
-        fit: BoxFit.cover,
-      ),
-      onTapDown: (TapDownDetails details) {
-        clearTimer();
-      },
-      onTap: () {
-        if (widget.onBannerItemClick != null) {
-         int index = widget._selectIndex % widget._bannerItemList.length;
+    return GestureDetector(
+        child: FadeInImage.memoryNetwork(
+          image: widget.dataList[index]._imagePath,
+          placeholder: kTransparentImage,
+          fit: BoxFit.cover,
+        ),
+        onTapDown: (TapDownDetails details) {
           clearTimer();
-          widget.onBannerItemClick(
-              index, widget.dataList[index]);
-        }
-      },
-      onTapCancel: () {
-        _restartTimer();
-      }
-    );
+        },
+        onTap: () {
+          if (widget.onBannerItemClick != null) {
+            int index = widget._selectIndex % widget._bannerItemList.length;
+            widget.onBannerItemClick(index, widget.dataList[index]);
+          }
+        },
+        onTapUp: (TapUpDetails details) {
+          _restartTimer();
+          print("-----------------onTapUp");
+        },
+        onTapCancel: () {
+          _restartTimer();
+          print("-----------------onTapCancel");
+        });
   }
 }
 
@@ -294,10 +298,12 @@ class BannerViewState extends State<BannerView> {
 class BannerItemBean {
   /// 图片路径
   String _imagePath;
+
   /// 跳转链接
   String url;
+
   /// 标题
   String title;
 
-  BannerItemBean(this._imagePath,this.url,this.title) : super();
+  BannerItemBean(this._imagePath, this.url, this.title) : super();
 }

@@ -31,10 +31,15 @@ class HomePage extends StatefulWidget {
 /// @version V1.0.0
 /// @date 2019/5/22
 class HomePageState extends State<HomePage> {
+  /// 主结构控件列表
+  List<Widget> _baseWidgetList = new List();
+
   /// 首页数据
   ContentRespEntity _contentRespEntity;
+
   /// 数据源
   List<BannerItemBean> _bannerDataList;
+
   /// banner控件
   BannerView _bannerView;
 
@@ -42,20 +47,27 @@ class HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return new Scaffold(
-      body: SingleChildScrollView(
-          child: Container(
+        body: SingleChildScrollView(
+            child: Container(
               color: Colors.grey[300],
               child: Column(
-                children: <Widget>[
-                  _createTileBar(),
-                  _createBannerView(),
-                  _createOperateMenu(),
-                  _crateLine(Colors.grey, 400),
-                  _createBroadcastWidget(),
-                  _crateLine(Colors.grey, 400),
-                ],
-              ))),
-    );
+                  children: _baseWidgetList,
+            ))),);
+  }
+
+
+  /// 创建基础视图
+  /// @return void
+  /// @author lizhid
+  /// @modify
+  /// @date 2019/6/18 20:57
+  void createView() {
+    _baseWidgetList.add(_createTileBar());
+    _baseWidgetList.add(_createBannerView());
+    _baseWidgetList.add(_createOperateMenu());
+    _baseWidgetList.add(_crateLine(Colors.grey, 400));
+    _baseWidgetList.add(_createBroadcastWidget());
+    _baseWidgetList.add(_crateLine(Colors.grey, 400));
   }
 
   /// 创建banner视图
@@ -65,18 +77,19 @@ class HomePageState extends State<HomePage> {
   /// @modify
   /// @date 2019/6/17 14:22
   Widget _createBannerView() {
-    _bannerView =  BannerView(_bannerDataList,
+    _bannerView = BannerView(_bannerDataList,
         onBannerItemClick: (int position, BannerItemBean bannerItemBean) {
-      if(bannerItemBean == null){
-        return;
-      }
-       Navigator.of(context).push(MaterialPageRoute(builder: (context){
-         Map<String, dynamic> bundle = new Map();
-         bundle['url'] = bannerItemBean.url;
-         bundle['title'] = bannerItemBean.title;
-         return MallRoute.getPage(ViewConst.ROUTE_COMMON_WEBVIEWPAGE,bundle);
-       }));
-    });
+          if (bannerItemBean == null) {
+            return;
+          }
+          Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+            Map<String, dynamic> bundle = new Map();
+            bundle['url'] = bannerItemBean.url;
+            bundle['title'] = bannerItemBean.title;
+            return MallRoute.getPage(
+                ViewConst.ROUTE_COMMON_WEBVIEWPAGE, bundle);
+          }));
+        });
     return _bannerView;
   }
 
@@ -84,9 +97,9 @@ class HomePageState extends State<HomePage> {
   void initState() {
     print("--------initState");
     super.initState();
+    createView();
     requestHomeContent();
   }
-
 
   @override
   void didUpdateWidget(HomePage oldWidget) {
@@ -99,7 +112,6 @@ class HomePageState extends State<HomePage> {
     super.reassemble();
     print("--------reassemble");
   }
-
 
   @override
   void didChangeDependencies() {
@@ -154,7 +166,7 @@ class HomePageState extends State<HomePage> {
                   })),
           Center(
             child:
-                Text("首页", style: TextStyle(color: Colors.black, fontSize: 20)),
+            Text("首页", style: TextStyle(color: Colors.black, fontSize: 20)),
           ),
           Align(
               alignment: Alignment.centerRight,
@@ -308,7 +320,7 @@ class HomePageState extends State<HomePage> {
                               left: 5, right: 5, top: 3, bottom: 3),
                           child: Text('详情',
                               style:
-                                  TextStyle(color: Colors.green, fontSize: 13)),
+                              TextStyle(color: Colors.green, fontSize: 13)),
                         ),
                         onTap: () {
                           MallToast.showToast("查看详情");
@@ -336,8 +348,8 @@ class HomePageState extends State<HomePage> {
       _contentRespEntity = result.data;
       List<BannerItemBean> bannerDataList = createBannerDataList();
       _bannerDataList = bannerDataList;
-      if(_bannerView != null){
-        _bannerView.updateBannerData(_bannerDataList);
+      if (_bannerView != null) {
+        _bannerView.updateBannerData(bannerDataList);
       }
     }, (MallException e) {});
   }
@@ -358,7 +370,8 @@ class HomePageState extends State<HomePage> {
     List<BannerItemBean> dataList = new List();
     _contentRespEntity.advertiseList
         .forEach((ContentRespDataAdvertiselist data) {
-      BannerItemBean bannerItemBean = new BannerItemBean(data.pic, data.url,data.name);
+      BannerItemBean bannerItemBean =
+      new BannerItemBean(data.pic, data.url, data.name);
       dataList.add(bannerItemBean);
     });
     return dataList;
