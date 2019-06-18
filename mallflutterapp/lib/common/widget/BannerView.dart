@@ -27,7 +27,7 @@ class BannerView extends StatefulWidget {
   double bannerHeight;
 
   /// 数据源
-  List<BannerItemBean> datas = new List();
+  List<BannerItemBean> dataList = new List();
 
   /// banner控件列表
   List<Widget> _bannerItemList = new List();
@@ -43,18 +43,33 @@ class BannerView extends StatefulWidget {
 
   /// 点击回调
   OnBannerItemClick onBannerItemClick;
+  /// banner控件state
+  BannerViewState _bannerViewState;
 
-  BannerView(this.datas,
+  BannerView(this.dataList,
       {this.bannerHeight = 200,
-      this.waitMillisecondsTime = 2000,
+      this.waitMillisecondsTime = 3000,
       this.scrollMillisecondsTime = 400,
       this.onBannerItemClick})
       : super();
 
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
-    return BannerViewState();
+    _bannerViewState = BannerViewState();
+    return _bannerViewState;
+  }
+
+  /// 更新数据
+  /// @param dataList 数据
+  /// @return void
+  /// @author lizhid
+  /// @modify
+  /// @date 2019/6/18 16:03
+  void updateBannerData(List<BannerItemBean> dataList){
+    if(_bannerViewState == null){
+      return;
+    }
+    _bannerViewState.updateBannerData(dataList);
   }
 }
 
@@ -71,11 +86,40 @@ class BannerViewState extends State<BannerView> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    initBannerItem();
+    _updateBannerView();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    widget.pageController.dispose();
+    clearTimer();
+  }
+
+  /// 更新banner 数据
+  /// @param dataList
+  /// @return void
+  /// @author lizhid
+  /// @modify
+  /// @date 2019/6/18 16:36
+  void updateBannerData(List<BannerItemBean> dataList){
+    setState(() {
+      widget.dataList = dataList;
+      _updateBannerView();
+    });
+  }
+
+  /// 更新版本数据
+  /// @return void
+  /// @author lizhid
+  /// @modify
+  /// @date 2019/6/18 15:57
+  void _updateBannerView(){
+    _initBannerItem();
     _updateBannerPoint(0);
-    restartTimer();
+    _restartTimer();
   }
 
   /// 开始倒计时
@@ -83,7 +127,7 @@ class BannerViewState extends State<BannerView> {
   /// @author lizhid
   /// @modify
   /// @date 2019/6/13 20:16
-  void restartTimer() {
+  void _restartTimer() {
     clearTimer();
     widget._timer = new Timer.periodic(
         new Duration(milliseconds: widget.waitMillisecondsTime), (Timer timer) {
@@ -159,11 +203,17 @@ class BannerViewState extends State<BannerView> {
   /// @author lizhid
   /// @modify
   /// @date 2019/6/13 19:40
-  void initBannerItem() {
-    if (widget.datas == null) {
+  void _initBannerItem() {
+    if (widget.dataList == null) {
       return;
     }
-    for (int i = 0; i < widget.datas.length; i++) {
+    if( widget._bannerItemList.length > 0){
+      widget._bannerItemList.clear();
+    }
+    if( widget._bannerPointList.length > 0){
+      widget._bannerPointList.clear();
+    }
+    for (int i = 0; i < widget.dataList.length; i++) {
       widget._bannerItemList.add(_createPageViewItem(i));
       widget._bannerPointList.add(_createBannerPoint(true));
     }
@@ -179,6 +229,7 @@ class BannerViewState extends State<BannerView> {
         height: widget.bannerHeight,
         child: Stack(children: <Widget>[
           PageView.builder(
+              itemCount: widget._bannerItemList.length > 0 ? MAX_COUNT : 0,
               itemBuilder: (context, index) {
                 return widget
                     ._bannerItemList[index % widget._bannerItemList.length];
@@ -188,9 +239,11 @@ class BannerViewState extends State<BannerView> {
                   parent: const ClampingScrollPhysics()),
               onPageChanged: (index) {
                 widget._selectIndex = index;
-                int pointIndex = index % widget._bannerItemList.length;
-                print("---------" + pointIndex.toString());
-                _updateBannerPoint(pointIndex);
+                if(widget._bannerItemList != null) {
+                  int pointIndex = index % widget._bannerItemList.length;
+                  print("---------" + pointIndex.toString());
+                  _updateBannerPoint(pointIndex);
+                }
               }),
           Align(
               alignment: Alignment.bottomCenter,
@@ -210,10 +263,10 @@ class BannerViewState extends State<BannerView> {
   /// @modify
   /// @date 2019/5/30 11:53
   Widget _createPageViewItem(int index) {
-    return GestureDetector(
+    return InkWell(
       child: FadeInImage.memoryNetwork(
-        image:widget.datas[index]._imagePath,
-        placeholder:kTransparentImage,
+        image: widget.dataList[index]._imagePath,
+        placeholder: kTransparentImage,
         fit: BoxFit.cover,
       ),
       onTapDown: (TapDownDetails details) {
@@ -221,16 +274,15 @@ class BannerViewState extends State<BannerView> {
       },
       onTap: () {
         if (widget.onBannerItemClick != null) {
+         int index = widget._selectIndex % widget._bannerItemList.length;
+          clearTimer();
           widget.onBannerItemClick(
-              widget._selectIndex, widget.datas[widget._selectIndex]);
+              index, widget.dataList[index]);
         }
       },
       onTapCancel: () {
-        restartTimer();
-      },
-      onTapUp: (TapUpDetails details) {
-        restartTimer();
-      },
+        _restartTimer();
+      }
     );
   }
 }
@@ -242,6 +294,10 @@ class BannerViewState extends State<BannerView> {
 class BannerItemBean {
   /// 图片路径
   String _imagePath;
+  /// 跳转链接
+  String url;
+  /// 标题
+  String title;
 
-  BannerItemBean(this._imagePath) : super();
+  BannerItemBean(this._imagePath,this.url,this.title) : super();
 }

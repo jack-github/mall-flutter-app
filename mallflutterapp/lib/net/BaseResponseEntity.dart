@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import '../entity_factory.dart';
 
 /// 响应实体基础类
@@ -7,15 +9,17 @@ import '../entity_factory.dart';
 class BaseResponseEntity<T> {
   /// 响应码 200：成功
   int code;
+
   /// 数据内容
   T data;
+
   /// 响应提示
   String message;
 
   /// 请求地址
   String requestUrl;
 
-  BaseResponseEntity({this.code, this.data, this.message,this.requestUrl});
+  BaseResponseEntity({this.code, this.data, this.message, this.requestUrl});
 
   BaseResponseEntity.fromJson(Map<String, dynamic> json) {
     this.code = json['code'];
@@ -23,9 +27,9 @@ class BaseResponseEntity<T> {
     this.requestUrl = json['requestUrl'];
     try {
       this.data = EntityFactory.generateOBJ(json['data']);
-    } catch (e) {
-      this.data = json['data'];
-      print(e);
+    } catch (e,s) {
+      print("数据解析异常-----"+e.toString() +"\n" + s.toString());
+      this.data = jsonEncode(json['data']) as T;
     }
   }
 

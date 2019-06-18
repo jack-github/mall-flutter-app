@@ -20,7 +20,7 @@ class HomeRequest {
   /// @modify
   /// @date 2019/6/17 19:14
   static void requestContent(
-      Function(BaseResponseEntity<ContentRespData>) successCallback,
+      Function(BaseResponseEntity<ContentRespEntity>) successCallback,
       Function(MallException) errorCallBack) {
     RequestManager.httpRequest(
         RequestTypeEnum.CACHE_AND_NET, true, ApiHost.HOME_CONTENT,

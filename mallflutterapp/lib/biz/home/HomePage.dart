@@ -1,24 +1,13 @@
-import 'dart:async';
-import 'dart:convert';
-
-import 'package:flutter/material.dart';
 import 'package:annotation_route/route.dart';
+import 'package:flutter/material.dart';
 import 'package:mallflutterapp/common/MallToast.dart';
 import 'package:mallflutterapp/common/ViewConst.dart';
 import 'package:mallflutterapp/common/widget/BannerView.dart';
 import 'package:mallflutterapp/data/home/HomeRequest.dart';
 import 'package:mallflutterapp/data/home/model/ContentRespEntity.dart';
-import 'package:mallflutterapp/net/ApiHost.dart';
 import 'package:mallflutterapp/net/BaseResponseEntity.dart';
-import 'package:mallflutterapp/net/BaseResponseEntity2.dart';
 import 'package:mallflutterapp/net/MallException.dart';
-import 'package:mallflutterapp/net/RequestManager2.dart';
-import 'package:mallflutterapp/net/RequestMethodEnum.dart';
-import 'package:mallflutterapp/net/RequestTypeEnum.dart';
-
-import 'MobileAddressRespEntity.dart';
-import 'MobileAddressReqEntity.dart';
-import 'package:mallflutterapp/biz/category/WeChatCategoryRespEntity.dart';
+import 'package:mallflutterapp/route/route.dart';
 
 /// 首页
 /// @author lizhid
@@ -42,34 +31,30 @@ class HomePage extends StatefulWidget {
 /// @version V1.0.0
 /// @date 2019/5/22
 class HomePageState extends State<HomePage> {
-
-  /// 图片列表
-  List<String> _imageList = [
-    "http://macro-oss.oss-cn-shenzhen.aliyuncs.com/mall/images/20181113/movie_ad.jpg",
-    "http://macro-oss.oss-cn-shenzhen.aliyuncs.com/mall/images/20181113/car_ad.jpg",
-    "http://macro-oss.oss-cn-shenzhen.aliyuncs.com/mall/images/20181113/car_ad2.jpg"
-  ];
-
   /// 首页数据
-  ContentRespEntity _contentRespEntity = null;
-
+  ContentRespEntity _contentRespEntity;
+  /// 数据源
+  List<BannerItemBean> _bannerDataList;
+  /// banner控件
+  BannerView _bannerView;
 
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return new Scaffold(
-      body: SingleChildScrollView(child: Container(
-          color: Colors.grey[200],
-          child: Column(
-            children: <Widget>[
-              _createTileBar(),
-              _createBannerView(),
-              _createOperateMenu(),
-              _crateLine(Colors.grey, 400),
-              _createBroadcastWidget(),
-              _crateLine(Colors.grey, 400),
-            ],
-          ))),
+      body: SingleChildScrollView(
+          child: Container(
+              color: Colors.grey[300],
+              child: Column(
+                children: <Widget>[
+                  _createTileBar(),
+                  _createBannerView(),
+                  _createOperateMenu(),
+                  _crateLine(Colors.grey, 400),
+                  _createBroadcastWidget(),
+                  _crateLine(Colors.grey, 400),
+                ],
+              ))),
     );
   }
 
@@ -80,21 +65,46 @@ class HomePageState extends State<HomePage> {
   /// @modify
   /// @date 2019/6/17 14:22
   Widget _createBannerView() {
-    List<BannerItemBean> dataList = new List();
-    _imageList.forEach((String imagePath) {
-      BannerItemBean bannerItemBean = new BannerItemBean(imagePath);
-      dataList.add(bannerItemBean);
-    });
-    return BannerView(dataList,
+    _bannerView =  BannerView(_bannerDataList,
         onBannerItemClick: (int position, BannerItemBean bannerItemBean) {
-      MallToast.showToast("点击了" + position.toString());
+      if(bannerItemBean == null){
+        return;
+      }
+       Navigator.of(context).push(MaterialPageRoute(builder: (context){
+         Map<String, dynamic> bundle = new Map();
+         bundle['url'] = bannerItemBean.url;
+         bundle['title'] = bannerItemBean.title;
+         return MallRoute.getPage(ViewConst.ROUTE_COMMON_WEBVIEWPAGE,bundle);
+       }));
     });
+    return _bannerView;
   }
 
   @override
   void initState() {
+    print("--------initState");
     super.initState();
     requestHomeContent();
+  }
+
+
+  @override
+  void didUpdateWidget(HomePage oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    print("--------oldWidget");
+  }
+
+  @override
+  void reassemble() {
+    super.reassemble();
+    print("--------reassemble");
+  }
+
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    print("--------didChangeDependencies");
   }
 
   /// 划线
@@ -310,18 +320,47 @@ class HomePageState extends State<HomePage> {
         ]));
   }
 
-
-    /// 请求首页数据
-    /// @return void
-    /// @author lizhid
-    /// @modify
-    /// @date 2019/6/17 19:26
-  void requestHomeContent(){
-    HomeRequest.requestContent((BaseResponseEntity<ContentRespData> data){
-
-    }, (MallException e){
-
-    });
+  /// 请求首页数据
+  /// @return void
+  /// @author lizhid
+  /// @modify
+  /// @date 2019/6/17 19:26
+  void requestHomeContent() {
+    HomeRequest.requestContent((BaseResponseEntity<ContentRespEntity> result) {
+      if (result == null) {
+        return;
+      }
+      if (result.data == null) {
+        return;
+      }
+      _contentRespEntity = result.data;
+      List<BannerItemBean> bannerDataList = createBannerDataList();
+      _bannerDataList = bannerDataList;
+      if(_bannerView != null){
+        _bannerView.updateBannerData(_bannerDataList);
+      }
+    }, (MallException e) {});
   }
 
+  /// 创建banner数据列表
+  /// @return List<BannerItemBean>
+  /// @author lizhid
+  /// @modify
+  /// @date 2019/6/18 15:47
+  List<BannerItemBean> createBannerDataList() {
+    if (_contentRespEntity == null) {
+      return null;
+    }
+    if (_contentRespEntity.advertiseList == null ||
+        _contentRespEntity.advertiseList.length == 0) {
+      return null;
+    }
+    List<BannerItemBean> dataList = new List();
+    _contentRespEntity.advertiseList
+        .forEach((ContentRespDataAdvertiselist data) {
+      BannerItemBean bannerItemBean = new BannerItemBean(data.pic, data.url,data.name);
+      dataList.add(bannerItemBean);
+    });
+    return dataList;
+  }
 }

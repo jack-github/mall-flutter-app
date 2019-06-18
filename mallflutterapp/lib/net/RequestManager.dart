@@ -302,12 +302,10 @@ class RequestManager {
     if (response.statusCode != HttpStatus.ok) {
       return;
     }
-    String responseBody = response.data;
-    Map<String, dynamic> responseData = jsonDecode(responseBody);
+    Map<String, dynamic>  responseData = response.data;
     if (responseData == null) {
       return;
     }
-
     /// 判断服务器响应码
     BaseResponseEntity<T> responseEntity =
         BaseResponseEntity.fromJson(responseData);
@@ -315,7 +313,7 @@ class RequestManager {
       responseEntity.requestUrl = url;
       if (responseEntity.code == 200) {
         if (needCache) {
-          _saveCache(url, param, responseBody);
+          _saveCache(url, param, responseData);
         }
         successCallback(responseEntity);
       } else {
@@ -359,8 +357,8 @@ class RequestManager {
   /// @modify
   /// @date 2019/5/24 17:30
   static void _saveCache(
-      String url, BaseRequestEntity param, dynamic responseBody) async {
-    if (responseBody == null) {
+      String url, BaseRequestEntity param, dynamic responseData) async {
+    if (responseData == null) {
       return;
     }
     String cacheKey = _createCacheKey(url, param);
@@ -368,7 +366,7 @@ class RequestManager {
       return;
     }
 
-    String cacheData = responseBody.toString();
+    String cacheData = jsonEncode(responseData);
     if (cacheData == null || cacheData.isEmpty) {
       return;
     }
