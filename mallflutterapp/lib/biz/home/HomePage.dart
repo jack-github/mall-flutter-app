@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:mallflutterapp/common/MallToast.dart';
 import 'package:mallflutterapp/common/ViewConst.dart';
 import 'package:mallflutterapp/common/widget/BannerView.dart';
+import 'package:mallflutterapp/common/widget/ResourceUtil.dart';
 import 'package:mallflutterapp/common/widget/WidgetUtil.dart';
 import 'package:mallflutterapp/data/home/HomeRequest.dart';
 import 'package:mallflutterapp/data/home/model/ContentRespEntity.dart';
 import 'package:mallflutterapp/net/BaseResponseEntity.dart';
 import 'package:mallflutterapp/net/MallException.dart';
 import 'package:mallflutterapp/route/route.dart';
+import 'package:transparent_image/transparent_image.dart';
 
 import 'HomeProductPanel.dart';
 
@@ -17,6 +19,7 @@ import 'HomeProductPanel.dart';
 /// @version V1.0.0
 /// @date 2019/5/22
 @ARoute(url: ViewConst.ROUTE_HOME_HOMEPAGE)
+// ignore: must_be_immutable
 class HomePage extends StatefulWidget {
   dynamic option;
 
@@ -342,7 +345,7 @@ class HomePageState extends State<HomePage> {
       if (_bannerView != null) {
         _bannerView.updateBannerData(bannerDataList);
       }
-      if(_homeProductPanel != null){
+      if (_homeProductPanel != null) {
         _homeProductPanel.updateItemList(_createBrandPanelItemList());
       }
     }, (MallException e) {});
@@ -379,27 +382,29 @@ class HomePageState extends State<HomePage> {
   Widget _createBrandPanel() {
     _homeProductPanel = HomeProductPanel(
         Container(
-          padding: EdgeInsets.only(top: 10,left: 10,right: 10),
+            padding: EdgeInsets.only(top: 10, left: 10, right: 10),
             child: Stack(
-          children: <Widget>[
-            Text("品牌制造商直供"),
-            Align(
-                alignment: Alignment.centerRight,
-                child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
-                      Text("更多推荐"),
-                      Icon(Icons.arrow_forward)
-                    ]))
-          ],
-        )),
+              children: <Widget>[
+                Text("品牌制造商直供"),
+                Align(
+                    alignment: Alignment.centerRight,
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+                          Text("更多推荐"),
+                          Image.asset(ResourceUtil.getAssetImagePath(
+                              "icon_more_right.png"))
+                        ]))
+              ],
+            )),
         null,
         SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             mainAxisSpacing: 20,
             crossAxisSpacing: 10,
             childAspectRatio: 1));
-    return Container(margin: EdgeInsets.only(top: 20), child: _homeProductPanel);
+    return Container(
+        margin: EdgeInsets.only(top: 20), child: _homeProductPanel);
   }
 
   /// 创建控件列表
@@ -429,8 +434,60 @@ class HomePageState extends State<HomePage> {
   /// @modify
   /// @date 2019/6/19 16:20
   Widget _createBrandPanelItem(ContentRespDataBrandlist data) {
+    if (data == null) {
+      return null;
+    }
     return Container(
-      child: Text("aaaa"),
-    );
+        child: Column(
+      children: <Widget>[
+        Stack(
+          children: <Widget>[
+            Container(
+              height: 40,
+              child: Column(children: <Widget>[
+                Text(data.name),
+                Text(data.productCount.toString())
+              ]),
+            ),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: Container(
+                  margin: EdgeInsets.only(right: 20),
+                  child: Stack(
+                      alignment: AlignmentDirectional.center,
+                      children: <Widget>[
+                        Image.asset(
+                            ResourceUtil.getAssetImagePath("icon_new.png")),
+                        Text(
+                          '新品',
+                          style: TextStyle(color: Colors.white),
+                        )
+                      ])),
+            )
+          ],
+        ),
+        Expanded(
+            child: GestureDetector(
+                child: Stack(
+                  children: <Widget>[
+                    Image.asset(
+                      ResourceUtil.getAssetImagePath("default_3.jpg"),
+                      width: 150,
+                      height: 150,
+                      fit: BoxFit.fill,
+                    ),
+                    FadeInImage.memoryNetwork(
+                        placeholder: kTransparentImage,
+                        image: data.logo,
+                        width: 150,
+                        height: 150,
+                        fit: BoxFit.fill)
+                  ],
+                ),
+                onTap: () {
+                  MallToast.showToast(data.name);
+                }))
+      ],
+    ));
   }
 }

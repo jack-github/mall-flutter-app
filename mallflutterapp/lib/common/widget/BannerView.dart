@@ -13,6 +13,7 @@ const MAX_COUNT = 0x7fffffff;
 /// @author lizhid
 /// @version V1.0.0
 /// @date 2019/6/17
+// ignore: must_be_immutable
 class BannerView extends StatefulWidget {
   /// 选择位置
   int _selectIndex = 0;

@@ -5,6 +5,7 @@ import 'package:mallflutterapp/common/widget/WidgetUtil.dart';
 /// @author lizhid
 /// @version V1.0.0
 /// @date 2019/6/19
+// ignore: must_be_immutable
 class HomeProductPanel extends StatefulWidget {
   /// 标题布局控件
   Widget titleWidget;
@@ -65,10 +66,10 @@ class HomeProductPanelState extends State<HomeProductPanel> {
                 child: widget.gridViewItemList == null
                     ? Text("暂无数据")
                     : GridView.builder(
+                        primary: false,
+                        shrinkWrap: true,
                         gridDelegate: widget.gridDelegate,
-                        itemCount: widget.gridViewItemList == null
-                            ? 0
-                            : widget.gridViewItemList.length,
+                        itemCount: widget.gridViewItemList.length,
                         itemBuilder: (context, index) {
                           return widget.gridViewItemList[index];
                         }))
