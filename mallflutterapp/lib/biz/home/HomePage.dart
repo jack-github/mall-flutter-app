@@ -3,11 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:mallflutterapp/common/MallToast.dart';
 import 'package:mallflutterapp/common/ViewConst.dart';
 import 'package:mallflutterapp/common/widget/BannerView.dart';
+import 'package:mallflutterapp/common/widget/WidgetUtil.dart';
 import 'package:mallflutterapp/data/home/HomeRequest.dart';
 import 'package:mallflutterapp/data/home/model/ContentRespEntity.dart';
 import 'package:mallflutterapp/net/BaseResponseEntity.dart';
 import 'package:mallflutterapp/net/MallException.dart';
 import 'package:mallflutterapp/route/route.dart';
+
+import 'HomeProductPanel.dart';
 
 /// 首页
 /// @author lizhid
@@ -37,24 +40,24 @@ class HomePageState extends State<HomePage> {
   /// 首页数据
   ContentRespEntity _contentRespEntity;
 
-  /// 数据源
-  List<BannerItemBean> _bannerDataList;
-
   /// banner控件
   BannerView _bannerView;
+
+  /// 推荐商品
+  HomeProductPanel _homeProductPanel;
 
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return new Scaffold(
-        body: SingleChildScrollView(
-            child: Container(
-              color: Colors.grey[300],
+      backgroundColor: Colors.grey[300],
+      body: SingleChildScrollView(
+          child: Container(
               child: Column(
-                  children: _baseWidgetList,
-            ))),);
+        children: _baseWidgetList,
+      ))),
+    );
   }
-
 
   /// 创建基础视图
   /// @return void
@@ -65,9 +68,10 @@ class HomePageState extends State<HomePage> {
     _baseWidgetList.add(_createTileBar());
     _baseWidgetList.add(_createBannerView());
     _baseWidgetList.add(_createOperateMenu());
-    _baseWidgetList.add(_crateLine(Colors.grey, 400));
+    _baseWidgetList.add(WidgetUtil.createLine(Color(0xFFBDBDBD), 1));
     _baseWidgetList.add(_createBroadcastWidget());
-    _baseWidgetList.add(_crateLine(Colors.grey, 400));
+    _baseWidgetList.add(WidgetUtil.createLine(Color(0xFFBDBDBD), 1));
+    _baseWidgetList.add(_createBrandPanel());
   }
 
   /// 创建banner视图
@@ -77,19 +81,18 @@ class HomePageState extends State<HomePage> {
   /// @modify
   /// @date 2019/6/17 14:22
   Widget _createBannerView() {
-    _bannerView = BannerView(_bannerDataList,
+    _bannerView = BannerView(null,
         onBannerItemClick: (int position, BannerItemBean bannerItemBean) {
-          if (bannerItemBean == null) {
-            return;
-          }
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-            Map<String, dynamic> bundle = new Map();
-            bundle['url'] = bannerItemBean.url;
-            bundle['title'] = bannerItemBean.title;
-            return MallRoute.getPage(
-                ViewConst.ROUTE_COMMON_WEBVIEWPAGE, bundle);
-          }));
-        });
+      if (bannerItemBean == null) {
+        return;
+      }
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+        Map<String, dynamic> bundle = new Map();
+        bundle['url'] = bannerItemBean.url;
+        bundle['title'] = bannerItemBean.title;
+        return MallRoute.getPage(ViewConst.ROUTE_COMMON_WEBVIEWPAGE, bundle);
+      }));
+    });
     return _bannerView;
   }
 
@@ -117,17 +120,6 @@ class HomePageState extends State<HomePage> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     print("--------didChangeDependencies");
-  }
-
-  /// 划线
-  /// @param color 颜色
-  /// @param colorValue 颜色值
-  /// @return Widget
-  /// @author lizhid
-  /// @modify
-  /// @date 2019/6/13 17:32
-  Widget _crateLine(MaterialColor color, int colorValue) {
-    return Container(color: color[colorValue], height: 1);
   }
 
   /// 创建顶部状态栏
@@ -166,7 +158,7 @@ class HomePageState extends State<HomePage> {
                   })),
           Center(
             child:
-            Text("首页", style: TextStyle(color: Colors.black, fontSize: 20)),
+                Text("首页", style: TextStyle(color: Colors.black, fontSize: 20)),
           ),
           Align(
               alignment: Alignment.centerRight,
@@ -320,7 +312,7 @@ class HomePageState extends State<HomePage> {
                               left: 5, right: 5, top: 3, bottom: 3),
                           child: Text('详情',
                               style:
-                              TextStyle(color: Colors.green, fontSize: 13)),
+                                  TextStyle(color: Colors.green, fontSize: 13)),
                         ),
                         onTap: () {
                           MallToast.showToast("查看详情");
@@ -347,9 +339,11 @@ class HomePageState extends State<HomePage> {
       }
       _contentRespEntity = result.data;
       List<BannerItemBean> bannerDataList = createBannerDataList();
-      _bannerDataList = bannerDataList;
       if (_bannerView != null) {
         _bannerView.updateBannerData(bannerDataList);
+      }
+      if(_homeProductPanel != null){
+        _homeProductPanel.updateItemList(_createBrandPanelItemList());
       }
     }, (MallException e) {});
   }
@@ -371,9 +365,72 @@ class HomePageState extends State<HomePage> {
     _contentRespEntity.advertiseList
         .forEach((ContentRespDataAdvertiselist data) {
       BannerItemBean bannerItemBean =
-      new BannerItemBean(data.pic, data.url, data.name);
+          new BannerItemBean(data.pic, data.url, data.name);
       dataList.add(bannerItemBean);
     });
     return dataList;
+  }
+
+  /// 创建推荐商品面板
+  /// @return Widget
+  /// @author lizhid
+  /// @modify
+  /// @date 2019/6/19 15:37
+  Widget _createBrandPanel() {
+    _homeProductPanel = HomeProductPanel(
+        Container(
+          padding: EdgeInsets.only(top: 10,left: 10,right: 10),
+            child: Stack(
+          children: <Widget>[
+            Text("品牌制造商直供"),
+            Align(
+                alignment: Alignment.centerRight,
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      Text("更多推荐"),
+                      Icon(Icons.arrow_forward)
+                    ]))
+          ],
+        )),
+        null,
+        SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            mainAxisSpacing: 20,
+            crossAxisSpacing: 10,
+            childAspectRatio: 1));
+    return Container(margin: EdgeInsets.only(top: 20), child: _homeProductPanel);
+  }
+
+  /// 创建控件列表
+  /// @return List<Widget>
+  /// @author lizhid
+  /// @modify
+  /// @date 2019/6/19 16:18
+  List<Widget> _createBrandPanelItemList() {
+    if (_contentRespEntity == null) {
+      return null;
+    }
+    if (_contentRespEntity.brandList == null ||
+        _contentRespEntity.brandList.length == 0) {
+      return null;
+    }
+    List<Widget> itemList = new List();
+    _contentRespEntity.brandList.forEach((ContentRespDataBrandlist data) {
+      itemList.add(_createBrandPanelItem(data));
+    });
+    return itemList;
+  }
+
+  /// 创建推荐商品条目
+  /// @param data 数据源
+  /// @return Widget
+  /// @author lizhid
+  /// @modify
+  /// @date 2019/6/19 16:20
+  Widget _createBrandPanelItem(ContentRespDataBrandlist data) {
+    return Container(
+      child: Text("aaaa"),
+    );
   }
 }

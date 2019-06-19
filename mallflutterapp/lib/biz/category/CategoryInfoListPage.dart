@@ -242,12 +242,9 @@ class CategoryInfoListPageState extends State<CategoryInfoListPage> {
   /// @modify
   /// @date 2019/5/30 9:54
   Widget _imageLoad(String url) {
-    Widget image = _defaultImage();
-    if (url == null || url.isEmpty) {
-      return image;
-    }
-    image = FadeInImage.memoryNetwork(placeholder: kTransparentImage, image: url, width: 100, height: 100, fit: BoxFit.cover);
-    return image;
+    Widget defaultImage = _defaultImage();
+    Widget image = FadeInImage.memoryNetwork(placeholder: kTransparentImage, image: url, width: 100, height: 100, fit: BoxFit.cover);
+    return Stack(children: <Widget>[defaultImage,image],);
   }
 
   /// 默认图片
@@ -256,7 +253,7 @@ class CategoryInfoListPageState extends State<CategoryInfoListPage> {
   /// @modify
   /// @date 2019/5/30 10:52
   Widget _defaultImage() {
-    return Image.asset("assets/images/defult_1.jpg",
+    return Image.asset("assets/images/default_2.jpg",
         width: 100, height: 100, fit: BoxFit.cover);
   }
 

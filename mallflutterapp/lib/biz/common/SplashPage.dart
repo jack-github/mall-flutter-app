@@ -35,15 +35,15 @@ class SplashPageState extends State<SplashPage> {
       alignment: Alignment.center,
       children: <Widget>[
         new Container(
-          color: Colors.transparent,
-          child: Image.network(
-              "http://macro-oss.oss-cn-shenzhen.aliyuncs.com/mall/images/20180615/xiaomi.jpg",
-              fit: BoxFit.fill),
-          constraints: new BoxConstraints.expand()),
+            color: Colors.transparent,
+            child: Image.asset("assets/images/im_splash.jpg", fit: BoxFit.fill),
+            constraints: new BoxConstraints.expand()),
         new Container(
             color: Colors.transparent,
-            child: Image.asset(
-                "assets/images/im_splash.jpg",
+            child: FadeInImage.memoryNetwork(
+                placeholder: kTransparentImage,
+                image:
+                    "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1560916003215&di=8202cc56b589616b720feae40db64681&imgtype=0&src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201607%2F16%2F20160716110018_edXCh.thumb.700_0.jpeg",
                 fit: BoxFit.fill),
             constraints: new BoxConstraints.expand()),
         new Container(

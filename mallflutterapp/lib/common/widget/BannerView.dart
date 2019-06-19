@@ -47,11 +47,15 @@ class BannerView extends StatefulWidget {
   /// banner控件state
   BannerViewState _bannerViewState;
 
+  /// 默认图片
+  String defaultImageAssetPath;
+
   BannerView(this.dataList,
       {this.bannerHeight = 200,
       this.waitMillisecondsTime = 4000,
       this.scrollMillisecondsTime = 400,
-      this.onBannerItemClick})
+      this.onBannerItemClick,
+      this.defaultImageAssetPath = "assets/images/default_3.jpg"})
       : super();
 
   @override
@@ -81,7 +85,6 @@ class BannerView extends StatefulWidget {
 class BannerViewState extends State<BannerView> {
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return _createPageView();
   }
 
@@ -93,7 +96,6 @@ class BannerViewState extends State<BannerView> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     widget.pageController.dispose();
     clearTimer();
@@ -229,6 +231,9 @@ class BannerViewState extends State<BannerView> {
     return Container(
         height: widget.bannerHeight,
         child: Stack(children: <Widget>[
+          Center(
+              child: Image.asset(widget.defaultImageAssetPath,
+                  fit: BoxFit.contain)),
           PageView.builder(
               itemCount: widget._bannerItemList.length > 0 ? MAX_COUNT : 0,
               itemBuilder: (context, index) {
@@ -238,15 +243,7 @@ class BannerViewState extends State<BannerView> {
               controller: widget.pageController,
               physics: const PageScrollPhysics(
                   parent: const ClampingScrollPhysics()),
-              onPageChanged: (index) {
-                widget._selectIndex = index;
-                if (widget._bannerItemList != null &&
-                    widget._bannerItemList.length > 0) {
-                  int pointIndex = index % widget._bannerItemList.length;
-                  print("---------" + pointIndex.toString());
-                  _updateBannerPoint(pointIndex);
-                }
-              }),
+              onPageChanged: _onPageChanged),
           Align(
               alignment: Alignment.bottomCenter,
               child: Container(
@@ -256,6 +253,20 @@ class BannerViewState extends State<BannerView> {
                     children: widget._bannerPointList,
                   )))
         ]));
+  }
+
+  /// 页面变化
+  /// @param index
+  /// @return void
+  /// @author lizhid
+  /// @modify
+  /// @date 2019/6/19 8:40
+  void _onPageChanged(index) {
+    widget._selectIndex = index;
+    if (widget._bannerItemList != null && widget._bannerItemList.length > 0) {
+      int pointIndex = index % widget._bannerItemList.length;
+      _updateBannerPoint(pointIndex);
+    }
   }
 
   /// 创建条目
