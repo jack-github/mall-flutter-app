@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:mallflutterapp/util/DimenUtil.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 /// 点击事件回调
@@ -52,12 +53,17 @@ class BannerView extends StatefulWidget {
   String defaultImageAssetPath;
 
   BannerView(this.dataList,
-      {this.bannerHeight = 200,
+      {this.bannerHeight,
       this.waitMillisecondsTime = 4000,
       this.scrollMillisecondsTime = 400,
       this.onBannerItemClick,
       this.defaultImageAssetPath = "assets/images/default_3.jpg"})
-      : super();
+      : super(){
+      if( this.bannerHeight == null) {
+        this.bannerHeight = DimenUtil.getDimen(200);
+      }
+  }
+
 
   @override
   State<StatefulWidget> createState() {
@@ -121,6 +127,9 @@ class BannerViewState extends State<BannerView> {
   /// @modify
   /// @date 2019/6/18 15:57
   void _updateBannerView() {
+    if (widget.dataList == null || widget.dataList.length == 0) {
+      return;
+    }
     _initBannerItem();
     _updateBannerPoint(0);
     _restartTimer();
@@ -182,9 +191,9 @@ class BannerViewState extends State<BannerView> {
   /// @date 2019/6/14 8:51
   Widget _createBannerPoint(bool normal) {
     return Container(
-        margin: EdgeInsets.only(left: 10),
-        width: 10,
-        height: 10,
+        margin: EdgeInsets.only(left: DimenUtil.getDimen(10)),
+        width: DimenUtil.getDimen(10),
+        height: DimenUtil.getDimen(10),
         decoration: BoxDecoration(
             shape: BoxShape.circle,
             color: normal ? Colors.grey[400] : Colors.white));
@@ -233,8 +242,7 @@ class BannerViewState extends State<BannerView> {
         height: widget.bannerHeight,
         child: Stack(children: <Widget>[
           Center(
-              child: Image.asset(widget.defaultImageAssetPath,
-                  fit: BoxFit.contain)),
+              child: Image.asset(widget.defaultImageAssetPath,width: DimenUtil.getDimen(80),height: DimenUtil.getDimen(80))),
           PageView.builder(
               itemCount: widget._bannerItemList.length > 0 ? MAX_COUNT : 0,
               itemBuilder: (context, index) {

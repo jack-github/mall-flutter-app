@@ -1,13 +1,16 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
-import 'package:annotation_route/route.dart';
 import 'package:mallflutterapp/route/route.dart';
 import 'package:mallflutterapp/common/ViewConst.dart';
+import 'package:mallflutterapp/util/DimenUtil.dart';
 
 void main() => runApp(new MyApp());
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    init();
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -18,6 +21,14 @@ class MyApp extends StatelessWidget {
   }
 }
 
+/// 初始化
+/// @return void
+/// @author lizhid
+/// @modify
+/// @date 2019/6/24 17:01
+void init() {
+  DimenUtil.initDimenUtil(360, 640, window.physicalSize,window.devicePixelRatio);
+}
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
@@ -43,7 +54,6 @@ class _MyHomePageState extends State<MyHomePage> {
         title: Text(widget.title),
       ),
       body: Center(
-
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -55,12 +65,13 @@ class _MyHomePageState extends State<MyHomePage> {
               style: Theme.of(context).textTheme.display1,
             ),
             RaisedButton(
-              onPressed: (){
-                Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context){
+              onPressed: () {
+                Navigator.of(context)
+                    .push(MaterialPageRoute(builder: (BuildContext context) {
                   return MallRoute.getPage('page//test', {});
                 }));
-                },
-             child: const Text("测试"),
+              },
+              child: const Text("测试"),
             ),
           ],
         ),

@@ -5,6 +5,8 @@ import 'package:mallflutterapp/biz/category/CategoryPage.dart';
 import 'package:mallflutterapp/biz/home/HomePage.dart';
 import 'package:mallflutterapp/biz/special/SpecialPage.dart';
 import 'package:mallflutterapp/common/ViewConst.dart';
+import 'package:mallflutterapp/util/DimenUtil.dart';
+import 'package:path/path.dart';
 
 /// APP主界面
 /// @author lizhid

@@ -10,6 +10,7 @@ import 'package:mallflutterapp/data/home/model/ContentRespEntity.dart';
 import 'package:mallflutterapp/net/BaseResponseEntity.dart';
 import 'package:mallflutterapp/net/MallException.dart';
 import 'package:mallflutterapp/route/route.dart';
+import 'package:mallflutterapp/util/DimenUtil.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 import 'HomeProductPanel.dart';
@@ -53,7 +54,7 @@ class HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     // TODO: implement build
     return new Scaffold(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: Colors.grey[100],
       body: SingleChildScrollView(
           child: Container(
               child: Column(
@@ -71,9 +72,11 @@ class HomePageState extends State<HomePage> {
     _baseWidgetList.add(_createTileBar());
     _baseWidgetList.add(_createBannerView());
     _baseWidgetList.add(_createOperateMenu());
-    _baseWidgetList.add(WidgetUtil.createLine(Color(0xFFBDBDBD), 1));
+    _baseWidgetList
+        .add(WidgetUtil.createLine(Color(0xFFEEEEEE), DimenUtil.getDimen(1)));
     _baseWidgetList.add(_createBroadcastWidget());
-    _baseWidgetList.add(WidgetUtil.createLine(Color(0xFFBDBDBD), 1));
+    _baseWidgetList
+        .add(WidgetUtil.createLine(Color(0xFFEEEEEE), DimenUtil.getDimen(1)));
     _baseWidgetList.add(_createBrandPanel());
   }
 
@@ -133,25 +136,25 @@ class HomePageState extends State<HomePage> {
   Widget _createTileBar() {
     return Container(
       color: Colors.white,
-      height: 70,
-      padding: EdgeInsets.only(top: 20),
+      height: DimenUtil.getDimen(70),
+      padding: EdgeInsets.only(top: DimenUtil.getDimen(20)),
       child: Stack(
         children: <Widget>[
           Container(
-              padding: EdgeInsets.only(left: 10),
+              padding: EdgeInsets.only(left: DimenUtil.getDimen(10)),
               child: GestureDetector(
                   child: Align(
                       alignment: Alignment.centerLeft,
                       child: Stack(children: <Widget>[
                         Image.asset(
                           "assets/images/icon_msg.png",
-                          width: 20,
-                          height: 20,
+                          width: DimenUtil.getDimen(20),
+                          height: DimenUtil.getDimen(20),
                         ),
                         Container(
-                          margin: EdgeInsets.only(left: 12),
-                          width: 10,
-                          height: 10,
+                          margin: EdgeInsets.only(left: DimenUtil.getDimen(12)),
+                          width: DimenUtil.getDimen(10),
+                          height: DimenUtil.getDimen(10),
                           decoration: BoxDecoration(
                               shape: BoxShape.circle, color: Colors.red),
                         )
@@ -160,23 +163,25 @@ class HomePageState extends State<HomePage> {
                     MallToast.showToast("点击了消息");
                   })),
           Center(
-            child:
-                Text("首页", style: TextStyle(color: Colors.black, fontSize: 20)),
+            child: Text("首页",
+                style: TextStyle(
+                    color: Colors.black, fontSize: DimenUtil.getDimen(20))),
           ),
           Align(
               alignment: Alignment.centerRight,
               child: Container(
-                  padding: EdgeInsets.only(right: 10),
-                  width: 60,
+                  padding: EdgeInsets.only(right: DimenUtil.getDimen(10)),
+                  width: DimenUtil.getDimen(60),
                   child: Row(
                     children: <Widget>[
                       Container(
-                          padding: EdgeInsets.only(right: 10),
+                          padding:
+                              EdgeInsets.only(right: DimenUtil.getDimen(10)),
                           child: GestureDetector(
                               child: Image.asset(
                                 "assets/images/icon_search.png",
-                                width: 20,
-                                height: 20,
+                                width: DimenUtil.getDimen(20),
+                                height: DimenUtil.getDimen(20),
                               ),
                               onTap: () {
                                 MallToast.showToast("点击了搜索");
@@ -186,8 +191,8 @@ class HomePageState extends State<HomePage> {
                             children: <Widget>[
                               Image.asset(
                                 "assets/images/icon_car.png",
-                                width: 20,
-                                height: 20,
+                                width: DimenUtil.getDimen(20),
+                                height: DimenUtil.getDimen(20),
                               )
                             ],
                           ),
@@ -207,23 +212,26 @@ class HomePageState extends State<HomePage> {
   /// @modify
   /// @date 2019/6/13 17:25
   Widget _createOperateMenu() {
-    double itemWidth = 90;
+    double itemWidth = DimenUtil.getDimen(90);
+    double itemHeight = DimenUtil.getDimen(71);
     return Container(
-      padding: EdgeInsets.only(top: 10, bottom: 10),
       color: Colors.white,
       child: Row(
         children: <Widget>[
           Container(
+              height: itemHeight,
               width: itemWidth,
               child: GestureDetector(
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Image.asset(
                       "assets/images/icon_ht.png",
-                      width: 25,
-                      height: 25,
+                      width: DimenUtil.getDimen(28),
+                      height: DimenUtil.getDimen(28),
                     ),
-                    Text("话题")
+                    Text("话题",
+                        style: TextStyle(fontSize: DimenUtil.getDimen(16)))
                   ],
                 ),
                 onTap: () {
@@ -231,16 +239,19 @@ class HomePageState extends State<HomePage> {
                 },
               )),
           Container(
+              height: itemHeight,
               width: itemWidth,
               child: GestureDetector(
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Image.asset(
                       "assets/images/icon_youxuan.png",
-                      width: 25,
-                      height: 25,
+                      width: DimenUtil.getDimen(28),
+                      height: DimenUtil.getDimen(28),
                     ),
-                    Text("优选")
+                    Text("优选",
+                        style: TextStyle(fontSize: DimenUtil.getDimen(16)))
                   ],
                 ),
                 onTap: () {
@@ -248,16 +259,19 @@ class HomePageState extends State<HomePage> {
                 },
               )),
           Container(
+              height: itemHeight,
               width: itemWidth,
               child: GestureDetector(
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Image.asset(
                       "assets/images/icon_tehui.png",
-                      width: 25,
-                      height: 25,
+                      width: DimenUtil.getDimen(28),
+                      height: DimenUtil.getDimen(28),
                     ),
-                    Text("特惠")
+                    Text("特惠",
+                        style: TextStyle(fontSize: DimenUtil.getDimen(16)))
                   ],
                 ),
                 onTap: () {
@@ -265,16 +279,19 @@ class HomePageState extends State<HomePage> {
                 },
               )),
           Container(
+              height: itemHeight,
               width: itemWidth,
               child: GestureDetector(
                 child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Image.asset(
                       "assets/images/icon_sign.png",
-                      width: 25,
-                      height: 25,
+                      width: DimenUtil.getDimen(28),
+                      height: DimenUtil.getDimen(28),
                     ),
-                    Text("签到")
+                    Text("签到",
+                        style: TextStyle(fontSize: DimenUtil.getDimen(16)))
                   ],
                 ),
                 onTap: () {
@@ -294,28 +311,37 @@ class HomePageState extends State<HomePage> {
   Widget _createBroadcastWidget() {
     return Container(
         color: Colors.white,
-        padding: EdgeInsets.only(top: 10, bottom: 10),
+        padding: EdgeInsets.only(
+            top: DimenUtil.getDimen(10), bottom: DimenUtil.getDimen(10)),
         child: Stack(children: <Widget>[
           Align(
               alignment: Alignment.centerLeft,
               child: Container(
-                margin: EdgeInsets.only(left: 20),
+                margin: EdgeInsets.only(left: DimenUtil.getDimen(20)),
                 child: Image.asset("assets/images/icon_broadcast.png"),
               )),
-          Center(child: Text("广播通知")),
+          Center(
+              child: Text(
+            "广播通知",
+            style: TextStyle(fontSize: DimenUtil.getDimen(13)),
+          )),
           Container(
-              margin: EdgeInsets.only(right: 20),
+              margin: EdgeInsets.only(right: DimenUtil.getDimen(20)),
               child: Align(
                   alignment: Alignment.centerRight,
                   child: Container(
-                      height: 25,
+                      height: DimenUtil.getDimen(25),
                       child: GestureDetector(
                         child: Container(
                           padding: EdgeInsets.only(
-                              left: 5, right: 5, top: 3, bottom: 3),
+                              left: DimenUtil.getDimen(5),
+                              right: DimenUtil.getDimen(5),
+                              top: DimenUtil.getDimen(2),
+                              bottom: DimenUtil.getDimen(2)),
                           child: Text('详情',
-                              style:
-                                  TextStyle(color: Colors.green, fontSize: 13)),
+                              style: TextStyle(
+                                  color: Colors.green,
+                                  fontSize: DimenUtil.getDimen(13))),
                         ),
                         onTap: () {
                           MallToast.showToast("查看详情");
@@ -323,7 +349,8 @@ class HomePageState extends State<HomePage> {
                       ),
                       decoration: BoxDecoration(
                           border: Border.all(color: Colors.green),
-                          borderRadius: BorderRadius.all(Radius.circular(5))))))
+                          borderRadius: BorderRadius.all(
+                              Radius.circular(DimenUtil.getDimen(5)))))))
         ]));
   }
 
@@ -382,7 +409,10 @@ class HomePageState extends State<HomePage> {
   Widget _createBrandPanel() {
     _homeProductPanel = HomeProductPanel(
         Container(
-            padding: EdgeInsets.only(top: 10, left: 10, right: 10),
+            margin: EdgeInsets.only(
+                top: DimenUtil.getDimen(10),
+                left: DimenUtil.getDimen(15),
+                right: DimenUtil.getDimen(15)),
             child: Stack(
               children: <Widget>[
                 Text("品牌制造商直供"),
@@ -391,20 +421,27 @@ class HomePageState extends State<HomePage> {
                     child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: <Widget>[
-                          Text("更多推荐"),
-                          Image.asset(ResourceUtil.getAssetImagePath(
-                              "icon_more_right.png"))
+                          Container(
+                              child: Text("更多推荐"),
+                              margin: EdgeInsets.only(
+                                  right: DimenUtil.getDimen(5))),
+                          Image.asset(
+                              ResourceUtil.getAssetImagePath(
+                                  "icon_more_right.png"),
+                              width: DimenUtil.getDimen(20),
+                              height: DimenUtil.getDimen(20))
                         ]))
               ],
             )),
         null,
         SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            mainAxisSpacing: 20,
-            crossAxisSpacing: 10,
+            mainAxisSpacing: DimenUtil.getDimen(20),
+            crossAxisSpacing: DimenUtil.getDimen(10),
             childAspectRatio: 1));
     return Container(
-        margin: EdgeInsets.only(top: 20), child: _homeProductPanel);
+        margin: EdgeInsets.only(top: DimenUtil.getDimen(20)),
+        child: _homeProductPanel);
   }
 
   /// 创建控件列表
@@ -438,56 +475,72 @@ class HomePageState extends State<HomePage> {
       return null;
     }
     return Container(
+        padding: EdgeInsets.all(DimenUtil.getDimen(5)),
+        color: Colors.grey[100],
         child: Column(
-      children: <Widget>[
-        Stack(
           children: <Widget>[
             Container(
-              height: 40,
-              child: Column(children: <Widget>[
-                Text(data.name),
-                Text(data.productCount.toString())
-              ]),
-            ),
-            Align(
-              alignment: Alignment.bottomRight,
-              child: Container(
-                  margin: EdgeInsets.only(right: 20),
-                  child: Stack(
-                      alignment: AlignmentDirectional.center,
-                      children: <Widget>[
-                        Image.asset(
-                            ResourceUtil.getAssetImagePath("icon_new.png")),
-                        Text(
-                          '新品',
-                          style: TextStyle(color: Colors.white),
-                        )
-                      ])),
-            )
-          ],
-        ),
-        Expanded(
-            child: GestureDetector(
+                height: DimenUtil.getDimen(50),
                 child: Stack(
                   children: <Widget>[
-                    Image.asset(
-                      ResourceUtil.getAssetImagePath("default_3.jpg"),
-                      width: 150,
-                      height: 150,
-                      fit: BoxFit.fill,
+                    Container(
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(data.name,
+                                style: TextStyle(
+                                    fontSize: DimenUtil.getDimen(16))),
+                            Text(data.productCount.toString(),
+                                style: TextStyle(
+                                    fontSize: DimenUtil.getDimen(14),
+                                    color: Colors.grey[400]))
+                          ]),
                     ),
-                    FadeInImage.memoryNetwork(
-                        placeholder: kTransparentImage,
-                        image: data.logo,
-                        width: 150,
-                        height: 150,
-                        fit: BoxFit.fill)
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: Container(
+                          margin:
+                              EdgeInsets.only(bottom: DimenUtil.getDimen(5)),
+                          child: Stack(
+                              alignment: AlignmentDirectional.topCenter,
+                              children: <Widget>[
+                                Image.asset(ResourceUtil.getAssetImagePath(
+                                    "icon_new.png")),
+                                Container(
+                                    child: Text(
+                                      '新品',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: DimenUtil.getDimen(13)),
+                                    ),
+                                    margin: EdgeInsets.only(
+                                        top: DimenUtil.getDimen(3)))
+                              ])),
+                    )
                   ],
-                ),
-                onTap: () {
-                  MallToast.showToast(data.name);
-                }))
-      ],
-    ));
+                )),
+            Expanded(
+                child: GestureDetector(
+                    child: Stack(
+                      children: <Widget>[
+                        Image.asset(
+                          ResourceUtil.getAssetImagePath("default_3.jpg"),
+                          width: DimenUtil.getDimen(80),
+                          height: DimenUtil.getDimen(80),
+                          fit: BoxFit.fill,
+                        ),
+                        FadeInImage.memoryNetwork(
+                            placeholder: kTransparentImage,
+                            image: data.logo,
+                            width: DimenUtil.getDimen(150),
+                            height: DimenUtil.getDimen(105),
+                            fit: BoxFit.fill)
+                      ],
+                    ),
+                    onTap: () {
+                      MallToast.showToast(data.name);
+                    }))
+          ],
+        ));
   }
 }

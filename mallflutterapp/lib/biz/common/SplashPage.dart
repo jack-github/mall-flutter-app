@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:annotation_route/route.dart';
 import 'package:mallflutterapp/common/ViewConst.dart';
 import 'package:mallflutterapp/route/route.dart';
+import 'package:mallflutterapp/util/DimenUtil.dart';
 import 'package:transparent_image/transparent_image.dart';
 
 /// 启动页
@@ -77,7 +78,7 @@ class SplashPageState extends State<SplashPage> {
   /// @modify
   /// @date 2019/5/14 15:51
   void countDown() {
-    var duration = new Duration(seconds: 1);
+    var duration = new Duration(seconds: 3);
     Future.delayed(duration, () {
       if (!stopCountDown) {
         startAppRootPage();

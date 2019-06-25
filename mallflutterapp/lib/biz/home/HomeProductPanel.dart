@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mallflutterapp/common/widget/WidgetUtil.dart';
+import 'package:mallflutterapp/util/DimenUtil.dart';
 
 /// 首页商铺列表
 /// @author lizhid
@@ -54,15 +55,17 @@ class HomeProductPanel extends StatefulWidget {
 class HomeProductPanelState extends State<HomeProductPanel> {
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return Container(
         color: widget.backgroundColor,
         child: Column(
           children: <Widget>[
-            WidgetUtil.createLine(Color(0xFFBDBDBD), 1),
+            WidgetUtil.createLine(Color(0xFFEEEEEE), DimenUtil.getDimen(1)),
             widget.titleWidget,
             Container(
-                padding: EdgeInsets.all(20),
+                padding: EdgeInsets.only(
+                    left: DimenUtil.getDimen(20),
+                    right: DimenUtil.getDimen(20),
+                    bottom: DimenUtil.getDimen(20)),
                 child: widget.gridViewItemList == null
                     ? Text("暂无数据")
                     : GridView.builder(
@@ -72,7 +75,8 @@ class HomeProductPanelState extends State<HomeProductPanel> {
                         itemCount: widget.gridViewItemList.length,
                         itemBuilder: (context, index) {
                           return widget.gridViewItemList[index];
-                        }))
+                        })),
+            WidgetUtil.createLine(Color(0xFFEEEEEE), DimenUtil.getDimen(1))
           ],
         ));
   }
