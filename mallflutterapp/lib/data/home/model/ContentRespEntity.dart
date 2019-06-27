@@ -1,585 +1,773 @@
 import 'package:mallflutterapp/net/BaseResponseEntity.dart';
 
-/// 首页响应数据
+/// 首页数据详情
 /// @author lizhid
 /// @version V1.0.0
-/// @date 2019/6/17
-class ContentRespEntity extends BaseResponseEntity {
-  List<ContentRespDataNewproductlist> newProductList;
-  List<ContentRespDataSubjectlist> subjectList;
-  ContentRespDataHomeflashpromotion homeFlashPromotion;
-  List<ContentRespDataHotproductlist> hotProductList;
-  List<ContentRespDataBrandlist> brandList;
-  List<ContentRespDataAdvertiselist> advertiseList;
+/// @date 2019/6/27
+class ContentRespEntity extends BaseResponseEntity{
+  HomeFlashPromotionBean homeFlashPromotion;
+  List<AdvertiseListListBean> advertiseList;
+  List<BrandListListBean> brandList;
+  List<HotProductListListBean> hotProductList;
+  List<NewProductListListBean> newProductList;
+  List<SubjectListListBean> subjectList;
 
   ContentRespEntity(
-      {this.newProductList,
-      this.subjectList,
-      this.homeFlashPromotion,
-      this.hotProductList,
+      {this.homeFlashPromotion,
+      this.advertiseList,
       this.brandList,
-      this.advertiseList});
+      this.hotProductList,
+      this.newProductList,
+      this.subjectList});
 
   ContentRespEntity.fromJson(Map<String, dynamic> json) {
-    if (json['newProductList'] != null) {
-      newProductList = new List<ContentRespDataNewproductlist>();
-      (json['newProductList'] as List).forEach((v) {
-        newProductList.add(new ContentRespDataNewproductlist.fromJson(v));
-      });
-    }
-    if (json['subjectList'] != null) {
-      subjectList = new List<ContentRespDataSubjectlist>();
-      (json['subjectList'] as List).forEach((v) {
-        subjectList.add(new ContentRespDataSubjectlist.fromJson(v));
-      });
-    }
-    homeFlashPromotion = json['homeFlashPromotion'] != null
-        ? new ContentRespDataHomeflashpromotion.fromJson(
-            json['homeFlashPromotion'])
+    this.homeFlashPromotion = json['homeFlashPromotion'] != null
+        ? HomeFlashPromotionBean.fromJson(json['homeFlashPromotion'])
         : null;
-    if (json['hotProductList'] != null) {
-      hotProductList = new List<ContentRespDataHotproductlist>();
-      (json['hotProductList'] as List).forEach((v) {
-        hotProductList.add(new ContentRespDataHotproductlist.fromJson(v));
-      });
-    }
-    if (json['brandList'] != null) {
-      brandList = new List<ContentRespDataBrandlist>();
-      (json['brandList'] as List).forEach((v) {
-        brandList.add(new ContentRespDataBrandlist.fromJson(v));
-      });
-    }
-    if (json['advertiseList'] != null) {
-      advertiseList = new List<ContentRespDataAdvertiselist>();
-      (json['advertiseList'] as List).forEach((v) {
-        advertiseList.add(new ContentRespDataAdvertiselist.fromJson(v));
-      });
-    }
+    this.advertiseList = (json['advertiseList'] as List) != null
+        ? (json['advertiseList'] as List)
+            .map((i) => AdvertiseListListBean.fromJson(i))
+            .toList()
+        : null;
+    this.brandList = (json['brandList'] as List) != null
+        ? (json['brandList'] as List)
+            .map((i) => BrandListListBean.fromJson(i))
+            .toList()
+        : null;
+    this.hotProductList = (json['hotProductList'] as List) != null
+        ? (json['hotProductList'] as List)
+            .map((i) => HotProductListListBean.fromJson(i))
+            .toList()
+        : null;
+    this.newProductList = (json['newProductList'] as List) != null
+        ? (json['newProductList'] as List)
+            .map((i) => NewProductListListBean.fromJson(i))
+            .toList()
+        : null;
+    this.subjectList = (json['subjectList'] as List) != null
+        ? (json['subjectList'] as List)
+            .map((i) => SubjectListListBean.fromJson(i))
+            .toList()
+        : null;
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map();
-    if (this.newProductList != null) {
-      data['newProductList'] =
-          this.newProductList.map((v) => v.toJson()).toList();
-    }
-    if (this.subjectList != null) {
-      data['subjectList'] = this.subjectList.map((v) => v.toJson()).toList();
-    }
+    final Map<String, dynamic> data = new Map<String, dynamic>();
     if (this.homeFlashPromotion != null) {
       data['homeFlashPromotion'] = this.homeFlashPromotion.toJson();
     }
-    if (this.hotProductList != null) {
-      data['hotProductList'] =
-          this.hotProductList.map((v) => v.toJson()).toList();
-    }
-    if (this.brandList != null) {
-      data['brandList'] = this.brandList.map((v) => v.toJson()).toList();
-    }
-    if (this.advertiseList != null) {
-      data['advertiseList'] =
-          this.advertiseList.map((v) => v.toJson()).toList();
-    }
+    data['advertiseList'] = this.advertiseList != null
+        ? this.advertiseList.map((i) => i.toJson()).toList()
+        : null;
+    data['brandList'] = this.brandList != null
+        ? this.brandList.map((i) => i.toJson()).toList()
+        : null;
+    data['hotProductList'] = this.hotProductList != null
+        ? this.hotProductList.map((i) => i.toJson()).toList()
+        : null;
+    data['newProductList'] = this.newProductList != null
+        ? this.newProductList.map((i) => i.toJson()).toList()
+        : null;
+    data['subjectList'] = this.subjectList != null
+        ? this.subjectList.map((i) => i.toJson()).toList()
+        : null;
     return data;
   }
 }
 
-class ContentRespDataNewproductlist {
-  String note;
-  int newStatus;
-  double originalPrice;
-  String keywords;
-  String productCategoryName;
-  int feightTemplateId;
-  int lowStock;
-  String description;
-  String pic;
-  int productCategoryId;
-  int recommandStatus;
-  int verifyStatus;
-  String subTitle;
-  int deleteStatus;
-  double price;
-  int usePointLimit;
-  int id;
-  int giftGrowth;
-  int stock;
-  int publishStatus;
-  int promotionType;
-  String brandName;
-  String productSn;
-  String albumPics;
-  int productAttributeCategoryId;
-  double weight;
-  String detailTitle;
-  int sort;
-  int giftPoint;
-  int promotionPerLimit;
-  int sale;
-  String unit;
-  String serviceIds;
-  int brandId;
-  String name;
-  int previewStatus;
+class HomeFlashPromotionBean {
+  String startTime;
+  String endTime;
+  String nextStartTime;
+  String nextEndTime;
+  List<ProductListListBean> productList;
 
-  ContentRespDataNewproductlist(
-      {this.note,
-      this.newStatus,
-      this.originalPrice,
-      this.keywords,
-      this.productCategoryName,
-      this.feightTemplateId,
-      this.lowStock,
-      this.description,
-      this.pic,
-      this.productCategoryId,
-      this.recommandStatus,
-      this.verifyStatus,
-      this.subTitle,
-      this.deleteStatus,
-      this.price,
-      this.usePointLimit,
-      this.id,
-      this.giftGrowth,
-      this.stock,
-      this.publishStatus,
-      this.promotionType,
-      this.brandName,
-      this.productSn,
-      this.albumPics,
-      this.productAttributeCategoryId,
-      this.weight,
-      this.detailTitle,
-      this.sort,
-      this.giftPoint,
-      this.promotionPerLimit,
-      this.sale,
-      this.unit,
-      this.serviceIds,
-      this.brandId,
-      this.name,
-      this.previewStatus});
+  HomeFlashPromotionBean(
+      {this.startTime,
+      this.endTime,
+      this.nextStartTime,
+      this.nextEndTime,
+      this.productList});
 
-  ContentRespDataNewproductlist.fromJson(Map<String, dynamic> json) {
-    note = json['note'];
-    newStatus = json['newStatus'];
-    originalPrice = json['originalPrice'];
-    keywords = json['keywords'];
-    productCategoryName = json['productCategoryName'];
-    feightTemplateId = json['feightTemplateId'];
-    lowStock = json['lowStock'];
-    description = json['description'];
-    pic = json['pic'];
-    productCategoryId = json['productCategoryId'];
-    recommandStatus = json['recommandStatus'];
-    verifyStatus = json['verifyStatus'];
-    subTitle = json['subTitle'];
-    deleteStatus = json['deleteStatus'];
-    price = json['price'];
-    usePointLimit = json['usePointLimit'];
-    id = json['id'];
-    giftGrowth = json['giftGrowth'];
-    stock = json['stock'];
-    publishStatus = json['publishStatus'];
-    promotionType = json['promotionType'];
-    brandName = json['brandName'];
-    productSn = json['productSn'];
-    albumPics = json['albumPics'];
-    productAttributeCategoryId = json['productAttributeCategoryId'];
-    weight = json['weight'];
-    detailTitle = json['detailTitle'];
-    sort = json['sort'];
-    giftPoint = json['giftPoint'];
-    promotionPerLimit = json['promotionPerLimit'];
-    sale = json['sale'];
-    unit = json['unit'];
-    serviceIds = json['serviceIds'];
-    brandId = json['brandId'];
-    name = json['name'];
-    previewStatus = json['previewStatus'];
+  HomeFlashPromotionBean.fromJson(Map<String, dynamic> json) {
+    this.startTime = json['startTime'];
+    this.endTime = json['endTime'];
+    this.nextStartTime = json['nextStartTime'];
+    this.nextEndTime = json['nextEndTime'];
+    this.productList = (json['productList'] as List) != null
+        ? (json['productList'] as List)
+            .map((i) => ProductListListBean.fromJson(i))
+            .toList()
+        : null;
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['note'] = this.note;
-    data['newStatus'] = this.newStatus;
-    data['originalPrice'] = this.originalPrice;
-    data['keywords'] = this.keywords;
-    data['productCategoryName'] = this.productCategoryName;
-    data['feightTemplateId'] = this.feightTemplateId;
-    data['lowStock'] = this.lowStock;
-    data['description'] = this.description;
-    data['pic'] = this.pic;
-    data['productCategoryId'] = this.productCategoryId;
-    data['recommandStatus'] = this.recommandStatus;
-    data['verifyStatus'] = this.verifyStatus;
-    data['subTitle'] = this.subTitle;
-    data['deleteStatus'] = this.deleteStatus;
-    data['price'] = this.price;
-    data['usePointLimit'] = this.usePointLimit;
-    data['id'] = this.id;
-    data['giftGrowth'] = this.giftGrowth;
-    data['stock'] = this.stock;
-    data['publishStatus'] = this.publishStatus;
-    data['promotionType'] = this.promotionType;
-    data['brandName'] = this.brandName;
-    data['productSn'] = this.productSn;
-    data['albumPics'] = this.albumPics;
-    data['productAttributeCategoryId'] = this.productAttributeCategoryId;
-    data['weight'] = this.weight;
-    data['detailTitle'] = this.detailTitle;
-    data['sort'] = this.sort;
-    data['giftPoint'] = this.giftPoint;
-    data['promotionPerLimit'] = this.promotionPerLimit;
-    data['sale'] = this.sale;
-    data['unit'] = this.unit;
-    data['serviceIds'] = this.serviceIds;
-    data['brandId'] = this.brandId;
-    data['name'] = this.name;
-    data['previewStatus'] = this.previewStatus;
+    data['startTime'] = this.startTime;
+    data['endTime'] = this.endTime;
+    data['nextStartTime'] = this.nextStartTime;
+    data['nextEndTime'] = this.nextEndTime;
+    data['productList'] = this.productList != null
+        ? this.productList.map((i) => i.toJson()).toList()
+        : null;
     return data;
   }
 }
 
-class ContentRespDataSubjectlist {
-  String createTime;
-  int collectCount;
-  String description;
-  int showStatus;
-  int id;
+class AdvertiseListListBean {
+  String name;
   String pic;
+  String startTime;
+  String endTime;
+  String url;
+  String note;
+  int id;
+  int type;
+  int status;
+  int clickCount;
+  int orderCount;
+  int sort;
+
+  AdvertiseListListBean(
+      {this.name,
+      this.pic,
+      this.startTime,
+      this.endTime,
+      this.url,
+      this.note,
+      this.id,
+      this.type,
+      this.status,
+      this.clickCount,
+      this.orderCount,
+      this.sort});
+
+  AdvertiseListListBean.fromJson(Map<String, dynamic> json) {
+    this.name = json['name'];
+    this.pic = json['pic'];
+    this.startTime = json['startTime'];
+    this.endTime = json['endTime'];
+    this.url = json['url'];
+    this.note = json['note'];
+    this.id = json['id'];
+    this.type = json['type'];
+    this.status = json['status'];
+    this.clickCount = json['clickCount'];
+    this.orderCount = json['orderCount'];
+    this.sort = json['sort'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['name'] = this.name;
+    data['pic'] = this.pic;
+    data['startTime'] = this.startTime;
+    data['endTime'] = this.endTime;
+    data['url'] = this.url;
+    data['note'] = this.note;
+    data['id'] = this.id;
+    data['type'] = this.type;
+    data['status'] = this.status;
+    data['clickCount'] = this.clickCount;
+    data['orderCount'] = this.orderCount;
+    data['sort'] = this.sort;
+    return data;
+  }
+}
+
+class BrandListListBean {
+  String name;
+  String firstLetter;
+  String logo;
+  String bigPic;
+  int id;
+  int sort;
+  int factoryStatus;
+  int showStatus;
+  int productCount;
+  int productCommentCount;
+
+  BrandListListBean(
+      {this.name,
+      this.firstLetter,
+      this.logo,
+      this.bigPic,
+      this.id,
+      this.sort,
+      this.factoryStatus,
+      this.showStatus,
+      this.productCount,
+      this.productCommentCount});
+
+  BrandListListBean.fromJson(Map<String, dynamic> json) {
+    this.name = json['name'];
+    this.firstLetter = json['firstLetter'];
+    this.logo = json['logo'];
+    this.bigPic = json['bigPic'];
+    this.id = json['id'];
+    this.sort = json['sort'];
+    this.factoryStatus = json['factoryStatus'];
+    this.showStatus = json['showStatus'];
+    this.productCount = json['productCount'];
+    this.productCommentCount = json['productCommentCount'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['name'] = this.name;
+    data['firstLetter'] = this.firstLetter;
+    data['logo'] = this.logo;
+    data['bigPic'] = this.bigPic;
+    data['id'] = this.id;
+    data['sort'] = this.sort;
+    data['factoryStatus'] = this.factoryStatus;
+    data['showStatus'] = this.showStatus;
+    data['productCount'] = this.productCount;
+    data['productCommentCount'] = this.productCommentCount;
+    return data;
+  }
+}
+
+class HotProductListListBean {
+  String name;
+  String pic;
+  String productSn;
+  String subTitle;
+  String unit;
+  String serviceIds;
+  String keywords;
+  String note;
+  String albumPics;
+  String detailTitle;
+  String brandName;
+  String productCategoryName;
+  String description;
+  int id;
+  int brandId;
+  int productCategoryId;
+  int feightTemplateId;
+  int productAttributeCategoryId;
+  int deleteStatus;
+  int publishStatus;
+  int newStatus;
+  int recommandStatus;
+  int verifyStatus;
+  int sort;
+  int sale;
+  double price;
+  int giftGrowth;
+  int giftPoint;
+  int usePointLimit;
+  double originalPrice;
+  int stock;
+  int lowStock;
+  double weight;
+  int previewStatus;
+  int promotionPerLimit;
+  int promotionType;
+
+  HotProductListListBean(
+      {this.name,
+      this.pic,
+      this.productSn,
+      this.subTitle,
+      this.unit,
+      this.serviceIds,
+      this.keywords,
+      this.note,
+      this.albumPics,
+      this.detailTitle,
+      this.brandName,
+      this.productCategoryName,
+      this.description,
+      this.id,
+      this.brandId,
+      this.productCategoryId,
+      this.feightTemplateId,
+      this.productAttributeCategoryId,
+      this.deleteStatus,
+      this.publishStatus,
+      this.newStatus,
+      this.recommandStatus,
+      this.verifyStatus,
+      this.sort,
+      this.sale,
+      this.price,
+      this.giftGrowth,
+      this.giftPoint,
+      this.usePointLimit,
+      this.originalPrice,
+      this.stock,
+      this.lowStock,
+      this.weight,
+      this.previewStatus,
+      this.promotionPerLimit,
+      this.promotionType});
+
+  HotProductListListBean.fromJson(Map<String, dynamic> json) {
+    this.name = json['name'];
+    this.pic = json['pic'];
+    this.productSn = json['productSn'];
+    this.subTitle = json['subTitle'];
+    this.unit = json['unit'];
+    this.serviceIds = json['serviceIds'];
+    this.keywords = json['keywords'];
+    this.note = json['note'];
+    this.albumPics = json['albumPics'];
+    this.detailTitle = json['detailTitle'];
+    this.brandName = json['brandName'];
+    this.productCategoryName = json['productCategoryName'];
+    this.description = json['description'];
+    this.id = json['id'];
+    this.brandId = json['brandId'];
+    this.productCategoryId = json['productCategoryId'];
+    this.feightTemplateId = json['feightTemplateId'];
+    this.productAttributeCategoryId = json['productAttributeCategoryId'];
+    this.deleteStatus = json['deleteStatus'];
+    this.publishStatus = json['publishStatus'];
+    this.newStatus = json['newStatus'];
+    this.recommandStatus = json['recommandStatus'];
+    this.verifyStatus = json['verifyStatus'];
+    this.sort = json['sort'];
+    this.sale = json['sale'];
+    this.price = json['price'];
+    this.giftGrowth = json['giftGrowth'];
+    this.giftPoint = json['giftPoint'];
+    this.usePointLimit = json['usePointLimit'];
+    this.originalPrice = json['originalPrice'];
+    this.stock = json['stock'];
+    this.lowStock = json['lowStock'];
+    this.weight = json['weight'];
+    this.previewStatus = json['previewStatus'];
+    this.promotionPerLimit = json['promotionPerLimit'];
+    this.promotionType = json['promotionType'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['name'] = this.name;
+    data['pic'] = this.pic;
+    data['productSn'] = this.productSn;
+    data['subTitle'] = this.subTitle;
+    data['unit'] = this.unit;
+    data['serviceIds'] = this.serviceIds;
+    data['keywords'] = this.keywords;
+    data['note'] = this.note;
+    data['albumPics'] = this.albumPics;
+    data['detailTitle'] = this.detailTitle;
+    data['brandName'] = this.brandName;
+    data['productCategoryName'] = this.productCategoryName;
+    data['description'] = this.description;
+    data['id'] = this.id;
+    data['brandId'] = this.brandId;
+    data['productCategoryId'] = this.productCategoryId;
+    data['feightTemplateId'] = this.feightTemplateId;
+    data['productAttributeCategoryId'] = this.productAttributeCategoryId;
+    data['deleteStatus'] = this.deleteStatus;
+    data['publishStatus'] = this.publishStatus;
+    data['newStatus'] = this.newStatus;
+    data['recommandStatus'] = this.recommandStatus;
+    data['verifyStatus'] = this.verifyStatus;
+    data['sort'] = this.sort;
+    data['sale'] = this.sale;
+    data['price'] = this.price;
+    data['giftGrowth'] = this.giftGrowth;
+    data['giftPoint'] = this.giftPoint;
+    data['usePointLimit'] = this.usePointLimit;
+    data['originalPrice'] = this.originalPrice;
+    data['stock'] = this.stock;
+    data['lowStock'] = this.lowStock;
+    data['weight'] = this.weight;
+    data['previewStatus'] = this.previewStatus;
+    data['promotionPerLimit'] = this.promotionPerLimit;
+    data['promotionType'] = this.promotionType;
+    return data;
+  }
+}
+
+class NewProductListListBean {
+  String name;
+  String pic;
+  String productSn;
+  String subTitle;
+  String unit;
+  String serviceIds;
+  String keywords;
+  String note;
+  String albumPics;
+  String detailTitle;
+  String brandName;
+  String productCategoryName;
+  String description;
+  int id;
+  int brandId;
+  int productCategoryId;
+  int feightTemplateId;
+  int productAttributeCategoryId;
+  int deleteStatus;
+  int publishStatus;
+  int newStatus;
+  int recommandStatus;
+  int verifyStatus;
+  int sort;
+  int sale;
+  double price;
+  int giftGrowth;
+  int giftPoint;
+  int usePointLimit;
+  double originalPrice;
+  int stock;
+  int lowStock;
+  double weight;
+  int previewStatus;
+  int promotionPerLimit;
+  int promotionType;
+
+  NewProductListListBean(
+      {this.name,
+      this.pic,
+      this.productSn,
+      this.subTitle,
+      this.unit,
+      this.serviceIds,
+      this.keywords,
+      this.note,
+      this.albumPics,
+      this.detailTitle,
+      this.brandName,
+      this.productCategoryName,
+      this.description,
+      this.id,
+      this.brandId,
+      this.productCategoryId,
+      this.feightTemplateId,
+      this.productAttributeCategoryId,
+      this.deleteStatus,
+      this.publishStatus,
+      this.newStatus,
+      this.recommandStatus,
+      this.verifyStatus,
+      this.sort,
+      this.sale,
+      this.price,
+      this.giftGrowth,
+      this.giftPoint,
+      this.usePointLimit,
+      this.originalPrice,
+      this.stock,
+      this.lowStock,
+      this.weight,
+      this.previewStatus,
+      this.promotionPerLimit,
+      this.promotionType});
+
+  NewProductListListBean.fromJson(Map<String, dynamic> json) {
+    this.name = json['name'];
+    this.pic = json['pic'];
+    this.productSn = json['productSn'];
+    this.subTitle = json['subTitle'];
+    this.unit = json['unit'];
+    this.serviceIds = json['serviceIds'];
+    this.keywords = json['keywords'];
+    this.note = json['note'];
+    this.albumPics = json['albumPics'];
+    this.detailTitle = json['detailTitle'];
+    this.brandName = json['brandName'];
+    this.productCategoryName = json['productCategoryName'];
+    this.description = json['description'];
+    this.id = json['id'];
+    this.brandId = json['brandId'];
+    this.productCategoryId = json['productCategoryId'];
+    this.feightTemplateId = json['feightTemplateId'];
+    this.productAttributeCategoryId = json['productAttributeCategoryId'];
+    this.deleteStatus = json['deleteStatus'];
+    this.publishStatus = json['publishStatus'];
+    this.newStatus = json['newStatus'];
+    this.recommandStatus = json['recommandStatus'];
+    this.verifyStatus = json['verifyStatus'];
+    this.sort = json['sort'];
+    this.sale = json['sale'];
+    this.price = json['price'];
+    this.giftGrowth = json['giftGrowth'];
+    this.giftPoint = json['giftPoint'];
+    this.usePointLimit = json['usePointLimit'];
+    this.originalPrice = json['originalPrice'];
+    this.stock = json['stock'];
+    this.lowStock = json['lowStock'];
+    this.weight = json['weight'];
+    this.previewStatus = json['previewStatus'];
+    this.promotionPerLimit = json['promotionPerLimit'];
+    this.promotionType = json['promotionType'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['name'] = this.name;
+    data['pic'] = this.pic;
+    data['productSn'] = this.productSn;
+    data['subTitle'] = this.subTitle;
+    data['unit'] = this.unit;
+    data['serviceIds'] = this.serviceIds;
+    data['keywords'] = this.keywords;
+    data['note'] = this.note;
+    data['albumPics'] = this.albumPics;
+    data['detailTitle'] = this.detailTitle;
+    data['brandName'] = this.brandName;
+    data['productCategoryName'] = this.productCategoryName;
+    data['description'] = this.description;
+    data['id'] = this.id;
+    data['brandId'] = this.brandId;
+    data['productCategoryId'] = this.productCategoryId;
+    data['feightTemplateId'] = this.feightTemplateId;
+    data['productAttributeCategoryId'] = this.productAttributeCategoryId;
+    data['deleteStatus'] = this.deleteStatus;
+    data['publishStatus'] = this.publishStatus;
+    data['newStatus'] = this.newStatus;
+    data['recommandStatus'] = this.recommandStatus;
+    data['verifyStatus'] = this.verifyStatus;
+    data['sort'] = this.sort;
+    data['sale'] = this.sale;
+    data['price'] = this.price;
+    data['giftGrowth'] = this.giftGrowth;
+    data['giftPoint'] = this.giftPoint;
+    data['usePointLimit'] = this.usePointLimit;
+    data['originalPrice'] = this.originalPrice;
+    data['stock'] = this.stock;
+    data['lowStock'] = this.lowStock;
+    data['weight'] = this.weight;
+    data['previewStatus'] = this.previewStatus;
+    data['promotionPerLimit'] = this.promotionPerLimit;
+    data['promotionType'] = this.promotionType;
+    return data;
+  }
+}
+
+class SubjectListListBean {
   String title;
-  int readCount;
+  String pic;
+  String createTime;
+  String description;
   String categoryName;
+  int id;
   int categoryId;
   int recommendStatus;
+  int collectCount;
+  int readCount;
   int commentCount;
+  int showStatus;
 
-  ContentRespDataSubjectlist(
-      {this.createTime,
-      this.collectCount,
-      this.description,
-      this.showStatus,
-      this.id,
+  SubjectListListBean(
+      {this.title,
       this.pic,
-      this.title,
-      this.readCount,
+      this.createTime,
+      this.description,
       this.categoryName,
+      this.id,
       this.categoryId,
       this.recommendStatus,
-      this.commentCount});
+      this.collectCount,
+      this.readCount,
+      this.commentCount,
+      this.showStatus});
 
-  ContentRespDataSubjectlist.fromJson(Map<String, dynamic> json) {
-    createTime = json['createTime'];
-    collectCount = json['collectCount'];
-    description = json['description'];
-    showStatus = json['showStatus'];
-    id = json['id'];
-    pic = json['pic'];
-    title = json['title'];
-    readCount = json['readCount'];
-    categoryName = json['categoryName'];
-    categoryId = json['categoryId'];
-    recommendStatus = json['recommendStatus'];
-    commentCount = json['commentCount'];
+  SubjectListListBean.fromJson(Map<String, dynamic> json) {
+    this.title = json['title'];
+    this.pic = json['pic'];
+    this.createTime = json['createTime'];
+    this.description = json['description'];
+    this.categoryName = json['categoryName'];
+    this.id = json['id'];
+    this.categoryId = json['categoryId'];
+    this.recommendStatus = json['recommendStatus'];
+    this.collectCount = json['collectCount'];
+    this.readCount = json['readCount'];
+    this.commentCount = json['commentCount'];
+    this.showStatus = json['showStatus'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['createTime'] = this.createTime;
-    data['collectCount'] = this.collectCount;
-    data['description'] = this.description;
-    data['showStatus'] = this.showStatus;
-    data['id'] = this.id;
-    data['pic'] = this.pic;
     data['title'] = this.title;
-    data['readCount'] = this.readCount;
+    data['pic'] = this.pic;
+    data['createTime'] = this.createTime;
+    data['description'] = this.description;
     data['categoryName'] = this.categoryName;
+    data['id'] = this.id;
     data['categoryId'] = this.categoryId;
     data['recommendStatus'] = this.recommendStatus;
+    data['collectCount'] = this.collectCount;
+    data['readCount'] = this.readCount;
     data['commentCount'] = this.commentCount;
+    data['showStatus'] = this.showStatus;
     return data;
   }
 }
 
-class ContentRespDataHomeflashpromotion {
-  ContentRespDataHomeflashpromotion();
-
-  ContentRespDataHomeflashpromotion.fromJson(Map<String, dynamic> json) {}
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    return data;
-  }
-}
-
-class ContentRespDataHotproductlist {
-  String note;
-  int newStatus;
-  double originalPrice;
-  String keywords;
-  String productCategoryName;
-  int feightTemplateId;
-  int lowStock;
-  String description;
+class ProductListListBean {
+  String name;
   String pic;
-  int productCategoryId;
-  int recommandStatus;
-  int verifyStatus;
-  String subTitle;
-  int deleteStatus;
-  double price;
-  int usePointLimit;
-  int id;
-  int giftGrowth;
-  int stock;
-  int publishStatus;
-  int promotionType;
-  String brandName;
   String productSn;
-  String albumPics;
-  int productAttributeCategoryId;
-  double weight;
-  String detailTitle;
-  int sort;
-  int giftPoint;
-  int promotionPerLimit;
-  int sale;
+  String subTitle;
   String unit;
   String serviceIds;
+  String keywords;
+  String note;
+  String albumPics;
+  String detailTitle;
+  String brandName;
+  String productCategoryName;
+  String description;
+  int id;
   int brandId;
-  String name;
+  int productCategoryId;
+  int feightTemplateId;
+  int productAttributeCategoryId;
+  int deleteStatus;
+  int publishStatus;
+  int newStatus;
+  int recommandStatus;
+  int verifyStatus;
+  int sort;
+  int sale;
+  double price;
+  int giftGrowth;
+  int giftPoint;
+  int usePointLimit;
+  double originalPrice;
+  int stock;
+  int lowStock;
+  double weight;
   int previewStatus;
+  int promotionPerLimit;
+  int promotionType;
+  double flashPromotionPrice;
+  int flashPromotionCount;
+  int flashPromotionLimit;
 
-  ContentRespDataHotproductlist(
-      {this.note,
-      this.newStatus,
-      this.originalPrice,
-      this.keywords,
-      this.productCategoryName,
-      this.feightTemplateId,
-      this.lowStock,
-      this.description,
+  ProductListListBean(
+      {this.name,
       this.pic,
-      this.productCategoryId,
-      this.recommandStatus,
-      this.verifyStatus,
-      this.subTitle,
-      this.deleteStatus,
-      this.price,
-      this.usePointLimit,
-      this.id,
-      this.giftGrowth,
-      this.stock,
-      this.publishStatus,
-      this.promotionType,
-      this.brandName,
       this.productSn,
-      this.albumPics,
-      this.productAttributeCategoryId,
-      this.weight,
-      this.detailTitle,
-      this.sort,
-      this.giftPoint,
-      this.promotionPerLimit,
-      this.sale,
+      this.subTitle,
       this.unit,
       this.serviceIds,
+      this.keywords,
+      this.note,
+      this.albumPics,
+      this.detailTitle,
+      this.brandName,
+      this.productCategoryName,
+      this.description,
+      this.id,
       this.brandId,
-      this.name,
-      this.previewStatus});
+      this.productCategoryId,
+      this.feightTemplateId,
+      this.productAttributeCategoryId,
+      this.deleteStatus,
+      this.publishStatus,
+      this.newStatus,
+      this.recommandStatus,
+      this.verifyStatus,
+      this.sort,
+      this.sale,
+      this.price,
+      this.giftGrowth,
+      this.giftPoint,
+      this.usePointLimit,
+      this.originalPrice,
+      this.stock,
+      this.lowStock,
+      this.weight,
+      this.previewStatus,
+      this.promotionPerLimit,
+      this.promotionType,
+      this.flashPromotionPrice,
+      this.flashPromotionCount,
+      this.flashPromotionLimit});
 
-  ContentRespDataHotproductlist.fromJson(Map<String, dynamic> json) {
-    note = json['note'];
-    newStatus = json['newStatus'];
-    originalPrice = json['originalPrice'];
-    keywords = json['keywords'];
-    productCategoryName = json['productCategoryName'];
-    feightTemplateId = json['feightTemplateId'];
-    lowStock = json['lowStock'];
-    description = json['description'];
-    pic = json['pic'];
-    productCategoryId = json['productCategoryId'];
-    recommandStatus = json['recommandStatus'];
-    verifyStatus = json['verifyStatus'];
-    subTitle = json['subTitle'];
-    deleteStatus = json['deleteStatus'];
-    price = json['price'];
-    usePointLimit = json['usePointLimit'];
-    id = json['id'];
-    giftGrowth = json['giftGrowth'];
-    stock = json['stock'];
-    publishStatus = json['publishStatus'];
-    promotionType = json['promotionType'];
-    brandName = json['brandName'];
-    productSn = json['productSn'];
-    albumPics = json['albumPics'];
-    productAttributeCategoryId = json['productAttributeCategoryId'];
-    weight = json['weight'];
-    detailTitle = json['detailTitle'];
-    sort = json['sort'];
-    giftPoint = json['giftPoint'];
-    promotionPerLimit = json['promotionPerLimit'];
-    sale = json['sale'];
-    unit = json['unit'];
-    serviceIds = json['serviceIds'];
-    brandId = json['brandId'];
-    name = json['name'];
-    previewStatus = json['previewStatus'];
+  ProductListListBean.fromJson(Map<String, dynamic> json) {
+    this.name = json['name'];
+    this.pic = json['pic'];
+    this.productSn = json['productSn'];
+    this.subTitle = json['subTitle'];
+    this.unit = json['unit'];
+    this.serviceIds = json['serviceIds'];
+    this.keywords = json['keywords'];
+    this.note = json['note'];
+    this.albumPics = json['albumPics'];
+    this.detailTitle = json['detailTitle'];
+    this.brandName = json['brandName'];
+    this.productCategoryName = json['productCategoryName'];
+    this.description = json['description'];
+    this.id = json['id'];
+    this.brandId = json['brandId'];
+    this.productCategoryId = json['productCategoryId'];
+    this.feightTemplateId = json['feightTemplateId'];
+    this.productAttributeCategoryId = json['productAttributeCategoryId'];
+    this.deleteStatus = json['deleteStatus'];
+    this.publishStatus = json['publishStatus'];
+    this.newStatus = json['newStatus'];
+    this.recommandStatus = json['recommandStatus'];
+    this.verifyStatus = json['verifyStatus'];
+    this.sort = json['sort'];
+    this.sale = json['sale'];
+    this.price = json['price'];
+    this.giftGrowth = json['giftGrowth'];
+    this.giftPoint = json['giftPoint'];
+    this.usePointLimit = json['usePointLimit'];
+    this.originalPrice = json['originalPrice'];
+    this.stock = json['stock'];
+    this.lowStock = json['lowStock'];
+    this.weight = json['weight'];
+    this.previewStatus = json['previewStatus'];
+    this.promotionPerLimit = json['promotionPerLimit'];
+    this.promotionType = json['promotionType'];
+    this.flashPromotionPrice = json['flashPromotionPrice'];
+    this.flashPromotionCount = json['flashPromotionCount'];
+    this.flashPromotionLimit = json['flashPromotionLimit'];
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['note'] = this.note;
-    data['newStatus'] = this.newStatus;
-    data['originalPrice'] = this.originalPrice;
-    data['keywords'] = this.keywords;
-    data['productCategoryName'] = this.productCategoryName;
-    data['feightTemplateId'] = this.feightTemplateId;
-    data['lowStock'] = this.lowStock;
-    data['description'] = this.description;
+    data['name'] = this.name;
     data['pic'] = this.pic;
-    data['productCategoryId'] = this.productCategoryId;
-    data['recommandStatus'] = this.recommandStatus;
-    data['verifyStatus'] = this.verifyStatus;
-    data['subTitle'] = this.subTitle;
-    data['deleteStatus'] = this.deleteStatus;
-    data['price'] = this.price;
-    data['usePointLimit'] = this.usePointLimit;
-    data['id'] = this.id;
-    data['giftGrowth'] = this.giftGrowth;
-    data['stock'] = this.stock;
-    data['publishStatus'] = this.publishStatus;
-    data['promotionType'] = this.promotionType;
-    data['brandName'] = this.brandName;
     data['productSn'] = this.productSn;
-    data['albumPics'] = this.albumPics;
-    data['productAttributeCategoryId'] = this.productAttributeCategoryId;
-    data['weight'] = this.weight;
-    data['detailTitle'] = this.detailTitle;
-    data['sort'] = this.sort;
-    data['giftPoint'] = this.giftPoint;
-    data['promotionPerLimit'] = this.promotionPerLimit;
-    data['sale'] = this.sale;
+    data['subTitle'] = this.subTitle;
     data['unit'] = this.unit;
     data['serviceIds'] = this.serviceIds;
-    data['brandId'] = this.brandId;
-    data['name'] = this.name;
-    data['previewStatus'] = this.previewStatus;
-    return data;
-  }
-}
-
-class ContentRespDataBrandlist {
-  int productCommentCount;
-  String name;
-  String bigPic;
-  String logo;
-  int showStatus;
-  int id;
-  int sort;
-  int productCount;
-  String firstLetter;
-  int factoryStatus;
-
-  ContentRespDataBrandlist(
-      {this.productCommentCount,
-      this.name,
-      this.bigPic,
-      this.logo,
-      this.showStatus,
-      this.id,
-      this.sort,
-      this.productCount,
-      this.firstLetter,
-      this.factoryStatus});
-
-  ContentRespDataBrandlist.fromJson(Map<String, dynamic> json) {
-    productCommentCount = json['productCommentCount'];
-    name = json['name'];
-    bigPic = json['bigPic'];
-    logo = json['logo'];
-    showStatus = json['showStatus'];
-    id = json['id'];
-    sort = json['sort'];
-    productCount = json['productCount'];
-    firstLetter = json['firstLetter'];
-    factoryStatus = json['factoryStatus'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['productCommentCount'] = this.productCommentCount;
-    data['name'] = this.name;
-    data['bigPic'] = this.bigPic;
-    data['logo'] = this.logo;
-    data['showStatus'] = this.showStatus;
-    data['id'] = this.id;
-    data['sort'] = this.sort;
-    data['productCount'] = this.productCount;
-    data['firstLetter'] = this.firstLetter;
-    data['factoryStatus'] = this.factoryStatus;
-    return data;
-  }
-}
-
-class ContentRespDataAdvertiselist {
-  String note;
-  int clickCount;
-  String name;
-  int orderCount;
-  String startTime;
-  int id;
-  String pic;
-  String endTime;
-  int sort;
-  int type;
-  String url;
-  int status;
-
-  ContentRespDataAdvertiselist(
-      {this.note,
-      this.clickCount,
-      this.name,
-      this.orderCount,
-      this.startTime,
-      this.id,
-      this.pic,
-      this.endTime,
-      this.sort,
-      this.type,
-      this.url,
-      this.status});
-
-  ContentRespDataAdvertiselist.fromJson(Map<String, dynamic> json) {
-    note = json['note'];
-    clickCount = json['clickCount'];
-    name = json['name'];
-    orderCount = json['orderCount'];
-    startTime = json['startTime'];
-    id = json['id'];
-    pic = json['pic'];
-    endTime = json['endTime'];
-    sort = json['sort'];
-    type = json['type'];
-    url = json['url'];
-    status = json['status'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['keywords'] = this.keywords;
     data['note'] = this.note;
-    data['clickCount'] = this.clickCount;
-    data['name'] = this.name;
-    data['orderCount'] = this.orderCount;
-    data['startTime'] = this.startTime;
+    data['albumPics'] = this.albumPics;
+    data['detailTitle'] = this.detailTitle;
+    data['brandName'] = this.brandName;
+    data['productCategoryName'] = this.productCategoryName;
+    data['description'] = this.description;
     data['id'] = this.id;
-    data['pic'] = this.pic;
-    data['endTime'] = this.endTime;
+    data['brandId'] = this.brandId;
+    data['productCategoryId'] = this.productCategoryId;
+    data['feightTemplateId'] = this.feightTemplateId;
+    data['productAttributeCategoryId'] = this.productAttributeCategoryId;
+    data['deleteStatus'] = this.deleteStatus;
+    data['publishStatus'] = this.publishStatus;
+    data['newStatus'] = this.newStatus;
+    data['recommandStatus'] = this.recommandStatus;
+    data['verifyStatus'] = this.verifyStatus;
     data['sort'] = this.sort;
-    data['type'] = this.type;
-    data['url'] = this.url;
-    data['status'] = this.status;
+    data['sale'] = this.sale;
+    data['price'] = this.price;
+    data['giftGrowth'] = this.giftGrowth;
+    data['giftPoint'] = this.giftPoint;
+    data['usePointLimit'] = this.usePointLimit;
+    data['originalPrice'] = this.originalPrice;
+    data['stock'] = this.stock;
+    data['lowStock'] = this.lowStock;
+    data['weight'] = this.weight;
+    data['previewStatus'] = this.previewStatus;
+    data['promotionPerLimit'] = this.promotionPerLimit;
+    data['promotionType'] = this.promotionType;
+    data['flashPromotionPrice'] = this.flashPromotionPrice;
+    data['flashPromotionCount'] = this.flashPromotionCount;
+    data['flashPromotionLimit'] = this.flashPromotionLimit;
     return data;
   }
 }

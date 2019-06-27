@@ -2,15 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:mallflutterapp/common/widget/WidgetUtil.dart';
 import 'package:mallflutterapp/util/DimenUtil.dart';
 
+import 'BaseHomePanelAdapter.dart';
+
 /// 首页商铺列表
 /// @author lizhid
 /// @version V1.0.0
 /// @date 2019/6/19
 // ignore: must_be_immutable
 class HomeProductPanel extends StatefulWidget {
-  /// 标题布局控件
-  Widget titleWidget;
-
   /// gridView 条目控件
   List<Widget> gridViewItemList;
 
@@ -23,9 +22,16 @@ class HomeProductPanel extends StatefulWidget {
   /// 商铺列表state
   HomeProductPanelState _homeProductPanelState;
 
-  HomeProductPanel(this.titleWidget, this.gridViewItemList, this.gridDelegate,
-      {this.backgroundColor = Colors.white})
-      : super();
+  /// 适配器
+  BaseHomePanelAdapter adapter;
+
+  HomeProductPanel(this.gridViewItemList, this.gridDelegate,
+      {this.backgroundColor = Colors.white, this.adapter})
+      : super() {
+    if (adapter != null) {
+      setAdapter(adapter);
+    }
+  }
 
   @override
   State<StatefulWidget> createState() {
@@ -44,7 +50,20 @@ class HomeProductPanel extends StatefulWidget {
     if (_homeProductPanelState == null) {
       return;
     }
-    _homeProductPanelState.updateItemList(gridViewItemList);
+    _homeProductPanelState._updateItemList(gridViewItemList);
+  }
+
+  /// 设置适配器
+  /// @param adapter
+  /// @return void
+  /// @author lizhid
+  /// @modify
+  /// @date 2019/6/26 17:22
+  void setAdapter(BaseHomePanelAdapter adapter) {
+    this.adapter = adapter;
+    this.adapter.bindDataChanged((List<Widget> data) {
+      updateItemList(data);
+    });
   }
 }
 
@@ -60,7 +79,7 @@ class HomeProductPanelState extends State<HomeProductPanel> {
         child: Column(
           children: <Widget>[
             WidgetUtil.createLine(Color(0xFFEEEEEE), DimenUtil.getDimen(1)),
-            widget.titleWidget,
+            widget.adapter.getTopView(),
             Container(
                 padding: EdgeInsets.only(
                     left: DimenUtil.getDimen(20),
@@ -87,7 +106,7 @@ class HomeProductPanelState extends State<HomeProductPanel> {
   /// @author lizhid
   /// @modify
   /// @date 2019/6/19 15:34
-  void updateItemList(List<Widget> gridViewItemList) {
+  void _updateItemList(List<Widget> gridViewItemList) {
     setState(() {
       widget.gridViewItemList = gridViewItemList;
     });

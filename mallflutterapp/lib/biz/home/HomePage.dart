@@ -1,5 +1,7 @@
 import 'package:annotation_route/route.dart';
 import 'package:flutter/material.dart';
+import 'package:mallflutterapp/biz/home/FlashPromotionAdapter.dart';
+import 'package:mallflutterapp/biz/home/RecommendBrandAdapter.dart';
 import 'package:mallflutterapp/common/MallToast.dart';
 import 'package:mallflutterapp/common/ViewConst.dart';
 import 'package:mallflutterapp/common/widget/BannerView.dart';
@@ -47,8 +49,11 @@ class HomePageState extends State<HomePage> {
   /// banner控件
   BannerView _bannerView;
 
-  /// 推荐商品
-  HomeProductPanel _homeProductPanel;
+  /// 推荐商品适配器
+  RecommendBrandAdapter _recommendBrandAdapter;
+
+  /// 秒杀商品适配器
+  FlashPromotionAdapter _flashPromotionAdapter;
 
   @override
   Widget build(BuildContext context) {
@@ -78,6 +83,7 @@ class HomePageState extends State<HomePage> {
     _baseWidgetList
         .add(WidgetUtil.createLine(Color(0xFFEEEEEE), DimenUtil.getDimen(1)));
     _baseWidgetList.add(_createBrandPanel());
+    _baseWidgetList.add(_createFlashPromotionPanel());
   }
 
   /// 创建banner视图
@@ -372,8 +378,13 @@ class HomePageState extends State<HomePage> {
       if (_bannerView != null) {
         _bannerView.updateBannerData(bannerDataList);
       }
-      if (_homeProductPanel != null) {
-        _homeProductPanel.updateItemList(_createBrandPanelItemList());
+      if (_recommendBrandAdapter != null) {
+        _recommendBrandAdapter
+            .notifyDataSetChanged(_contentRespEntity.brandList);
+      }
+      if (_flashPromotionAdapter != null) {
+        _flashPromotionAdapter
+            .notifyDataSetChanged(_contentRespEntity.homeFlashPromotion);
       }
     }, (MallException e) {});
   }
@@ -392,8 +403,7 @@ class HomePageState extends State<HomePage> {
       return null;
     }
     List<BannerItemBean> dataList = new List();
-    _contentRespEntity.advertiseList
-        .forEach((ContentRespDataAdvertiselist data) {
+    _contentRespEntity.advertiseList.forEach((AdvertiseListListBean data) {
       BannerItemBean bannerItemBean =
           new BannerItemBean(data.pic, data.url, data.name);
       dataList.add(bannerItemBean);
@@ -407,140 +417,39 @@ class HomePageState extends State<HomePage> {
   /// @modify
   /// @date 2019/6/19 15:37
   Widget _createBrandPanel() {
-    _homeProductPanel = HomeProductPanel(
-        Container(
-            margin: EdgeInsets.only(
-                top: DimenUtil.getDimen(10),
-                left: DimenUtil.getDimen(15),
-                right: DimenUtil.getDimen(15)),
-            child: Stack(
-              children: <Widget>[
-                Text("品牌制造商直供"),
-                Align(
-                    alignment: Alignment.centerRight,
-                    child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          Container(
-                              child: Text("更多推荐"),
-                              margin: EdgeInsets.only(
-                                  right: DimenUtil.getDimen(5))),
-                          Image.asset(
-                              ResourceUtil.getAssetImagePath(
-                                  "icon_more_right.png"),
-                              width: DimenUtil.getDimen(20),
-                              height: DimenUtil.getDimen(20))
-                        ]))
-              ],
-            )),
-        null,
+    SliverGridDelegate sliverGridDelegate =
         SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
             mainAxisSpacing: DimenUtil.getDimen(20),
             crossAxisSpacing: DimenUtil.getDimen(10),
-            childAspectRatio: 1));
+            childAspectRatio: 1);
+    HomeProductPanel _homeProductPanel =
+        HomeProductPanel(null, sliverGridDelegate);
+    _recommendBrandAdapter = new RecommendBrandAdapter();
+    _homeProductPanel.setAdapter(_recommendBrandAdapter);
     return Container(
         margin: EdgeInsets.only(top: DimenUtil.getDimen(20)),
         child: _homeProductPanel);
   }
 
-  /// 创建控件列表
-  /// @return List<Widget>
-  /// @author lizhid
-  /// @modify
-  /// @date 2019/6/19 16:18
-  List<Widget> _createBrandPanelItemList() {
-    if (_contentRespEntity == null) {
-      return null;
-    }
-    if (_contentRespEntity.brandList == null ||
-        _contentRespEntity.brandList.length == 0) {
-      return null;
-    }
-    List<Widget> itemList = new List();
-    _contentRespEntity.brandList.forEach((ContentRespDataBrandlist data) {
-      itemList.add(_createBrandPanelItem(data));
-    });
-    return itemList;
-  }
-
-  /// 创建推荐商品条目
-  /// @param data 数据源
+  /// 创建秒杀商品面板
   /// @return Widget
   /// @author lizhid
   /// @modify
-  /// @date 2019/6/19 16:20
-  Widget _createBrandPanelItem(ContentRespDataBrandlist data) {
-    if (data == null) {
-      return null;
-    }
+  /// @date 2019/6/19 15:37
+  Widget _createFlashPromotionPanel() {
+    SliverGridDelegate sliverGridDelegate =
+        SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            mainAxisSpacing: DimenUtil.getDimen(20),
+            crossAxisSpacing: DimenUtil.getDimen(10),
+            childAspectRatio: 1);
+    HomeProductPanel _homeProductPanel =
+        HomeProductPanel(null, sliverGridDelegate);
+    _flashPromotionAdapter = new FlashPromotionAdapter();
+    _homeProductPanel.setAdapter(_flashPromotionAdapter);
     return Container(
-        padding: EdgeInsets.all(DimenUtil.getDimen(5)),
-        color: Colors.grey[100],
-        child: Column(
-          children: <Widget>[
-            Container(
-                height: DimenUtil.getDimen(50),
-                child: Stack(
-                  children: <Widget>[
-                    Container(
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(data.name,
-                                style: TextStyle(
-                                    fontSize: DimenUtil.getDimen(16))),
-                            Text(data.productCount.toString(),
-                                style: TextStyle(
-                                    fontSize: DimenUtil.getDimen(14),
-                                    color: Colors.grey[400]))
-                          ]),
-                    ),
-                    Align(
-                      alignment: Alignment.bottomRight,
-                      child: Container(
-                          margin:
-                              EdgeInsets.only(bottom: DimenUtil.getDimen(5)),
-                          child: Stack(
-                              alignment: AlignmentDirectional.topCenter,
-                              children: <Widget>[
-                                Image.asset(ResourceUtil.getAssetImagePath(
-                                    "icon_new.png")),
-                                Container(
-                                    child: Text(
-                                      '新品',
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: DimenUtil.getDimen(13)),
-                                    ),
-                                    margin: EdgeInsets.only(
-                                        top: DimenUtil.getDimen(3)))
-                              ])),
-                    )
-                  ],
-                )),
-            Expanded(
-                child: GestureDetector(
-                    child: Stack(
-                      children: <Widget>[
-                        Image.asset(
-                          ResourceUtil.getAssetImagePath("default_3.jpg"),
-                          width: DimenUtil.getDimen(80),
-                          height: DimenUtil.getDimen(80),
-                          fit: BoxFit.fill,
-                        ),
-                        FadeInImage.memoryNetwork(
-                            placeholder: kTransparentImage,
-                            image: data.logo,
-                            width: DimenUtil.getDimen(150),
-                            height: DimenUtil.getDimen(105),
-                            fit: BoxFit.fill)
-                      ],
-                    ),
-                    onTap: () {
-                      MallToast.showToast(data.name);
-                    }))
-          ],
-        ));
+        margin: EdgeInsets.only(top: DimenUtil.getDimen(20)),
+        child: _homeProductPanel);
   }
 }
