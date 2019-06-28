@@ -33,9 +33,9 @@ class DimenUtil {
     DimenUtil.devicePixelRatio = devicePixelRatio;
   }
 
-  /// 获取计算后的尺寸
+  /// 获取dp
   /// @param num
-  /// @return double
+  /// @return double dp
   /// @author lizhid
   /// @modify
   /// @date 2019/6/24 16:26
@@ -43,18 +43,32 @@ class DimenUtil {
     if (deviceSize == null) {
       deviceSize = window.physicalSize;
     }
-    print("designW：" +
-        designW.toString() +
-        " --designH：" +
-        designH.toString() +
-        " --deviceW：" +
-        deviceSize.width.toString() +
-        " --deviceH：" +
-        deviceSize.height.toString() +
-        " --devicePixelRatio：" +
-        devicePixelRatio.toString());
+//    print("designW：" +
+//        designW.toString() +
+//        " --designH：" +
+//        designH.toString() +
+//        " --deviceW：" +
+//        deviceSize.width.toString() +
+//        " --deviceH：" +
+//        deviceSize.height.toString() +
+//        " --devicePixelRatio：" +
+//        devicePixelRatio.toString());
     double dimen = deviceSize.width / designW * num / devicePixelRatio;
-    print("num：" + num.toString() + "--dimen：" + dimen.toString());
+   // print("num：" + num.toString() + "--dimen：" + dimen.toString());
     return dimen;
+  }
+
+  /// 获取px
+  /// @param dp
+  /// @return double px
+  /// @author lizhid
+  /// @modify
+  /// @date 2019/6/27 16:36
+  static double getDimenPX(double dp) {
+    if (deviceSize == null) {
+      deviceSize = window.physicalSize;
+    }
+    double px = dp * devicePixelRatio * designW / deviceSize.width;
+    return px;
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mallflutterapp/common/MallToast.dart';
+import 'package:mallflutterapp/common/widget/AutoSizeText.dart';
 import 'package:mallflutterapp/common/widget/ResourceUtil.dart';
 import 'package:mallflutterapp/data/home/model/ContentRespEntity.dart';
 import 'package:mallflutterapp/util/DimenUtil.dart';
@@ -114,11 +115,12 @@ class FlashPromotionAdapter extends BaseHomePanelAdapter {
                         Align(
                           alignment: Alignment.topRight,
                           child: Container(
+                            width: DimenUtil.getDimen(40),
+                            height: DimenUtil.getDimen(40),
                             alignment: AlignmentDirectional.center,
-                            child: Text("￥" + data.price.toInt().toString(),
-                                style: TextStyle(
-                                    fontSize: DimenUtil.getDimen(13),
-                                    color: Colors.white)),
+                            child: AutoSizeText("￥" + data.price.toInt().toString(),DimenUtil.getDimen(35),style: TextStyle(
+                                fontSize: DimenUtil.getDimen(15),
+                                color: Colors.white),),
                             decoration: BoxDecoration(
                                 shape: BoxShape.circle, color: Colors.red),
                           ),

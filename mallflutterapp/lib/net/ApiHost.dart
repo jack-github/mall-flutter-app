@@ -14,7 +14,7 @@ class ApiHost{
   static const String  weChat_article_search = "/wx/article/search";
 ///------------------------------商城-------------------------------------
   /// 服务器地址
-  static const String SERVER_URL = "http://10.127.2.50:8085";
+  static const String SERVER_URL = "http://10.127.2.50:8080";
   /// 首页接口
   static const String HOME_CONTENT ="/home/content";
 }
