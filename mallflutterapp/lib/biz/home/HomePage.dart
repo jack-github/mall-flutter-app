@@ -4,8 +4,8 @@ import 'package:mallflutterapp/biz/home/FlashPromotionAdapter.dart';
 import 'package:mallflutterapp/biz/home/RecommendBrandAdapter.dart';
 import 'package:mallflutterapp/common/MallToast.dart';
 import 'package:mallflutterapp/common/ViewConst.dart';
+import 'package:mallflutterapp/common/widget/AutoSizeText.dart';
 import 'package:mallflutterapp/common/widget/BannerView.dart';
-import 'package:mallflutterapp/common/widget/ResourceUtil.dart';
 import 'package:mallflutterapp/common/widget/WidgetUtil.dart';
 import 'package:mallflutterapp/data/home/HomeRequest.dart';
 import 'package:mallflutterapp/data/home/model/ContentRespEntity.dart';
@@ -13,7 +13,6 @@ import 'package:mallflutterapp/net/BaseResponseEntity.dart';
 import 'package:mallflutterapp/net/MallException.dart';
 import 'package:mallflutterapp/route/route.dart';
 import 'package:mallflutterapp/util/DimenUtil.dart';
-import 'package:transparent_image/transparent_image.dart';
 
 import 'HomeProductPanel.dart';
 
@@ -157,12 +156,16 @@ class HomePageState extends State<HomePage> {
                           width: DimenUtil.getDimen(20),
                           height: DimenUtil.getDimen(20),
                         ),
-                        Container(
-                          margin: EdgeInsets.only(left: DimenUtil.getDimen(12)),
-                          width: DimenUtil.getDimen(10),
-                          height: DimenUtil.getDimen(10),
-                          decoration: BoxDecoration(
-                              shape: BoxShape.circle, color: Colors.red),
+                        Offstage(
+                          offstage: false,
+                          child: Container(
+                            margin:
+                                EdgeInsets.only(left: DimenUtil.getDimen(15)),
+                            width: DimenUtil.getDimen(7),
+                            height: DimenUtil.getDimen(7),
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle, color: Colors.red),
+                          ),
                         )
                       ])),
                   onTap: () {
@@ -176,8 +179,7 @@ class HomePageState extends State<HomePage> {
           Align(
               alignment: Alignment.centerRight,
               child: Container(
-                  padding: EdgeInsets.only(right: DimenUtil.getDimen(10)),
-                  width: DimenUtil.getDimen(60),
+                  width: DimenUtil.getDimen(65),
                   child: Row(
                     children: <Widget>[
                       Container(
@@ -194,11 +196,34 @@ class HomePageState extends State<HomePage> {
                               })),
                       GestureDetector(
                           child: Stack(
+                            alignment: AlignmentDirectional.centerStart,
                             children: <Widget>[
                               Image.asset(
                                 "assets/images/icon_car.png",
                                 width: DimenUtil.getDimen(20),
                                 height: DimenUtil.getDimen(20),
+                              ),
+                              Offstage(
+                                offstage: false,
+                                child: Align(
+                                  alignment: Alignment.topRight,
+                                  child: Container(
+                                      margin: EdgeInsets.only(
+                                          top: DimenUtil.getDimen(8),
+                                          left: DimenUtil.getDimen(10)),
+                                      alignment: AlignmentDirectional.center,
+                                      width: DimenUtil.getDimen(18),
+                                      height: DimenUtil.getDimen(18),
+                                      child: AutoSizeText(
+                                          '9', DimenUtil.getDimen(18),
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize:
+                                                  DimenUtil.getDimen(12))),
+                                      decoration: BoxDecoration(
+                                          color: Colors.red,
+                                          shape: BoxShape.circle)),
+                                ),
                               )
                             ],
                           ),
@@ -373,18 +398,22 @@ class HomePageState extends State<HomePage> {
       if (result.data == null) {
         return;
       }
-      _contentRespEntity = result.data;
+
+      ContentRespEntity contentRespEntity = result.data;
+      setState(() {
+        _contentRespEntity = contentRespEntity;
+      });
       List<BannerItemBean> bannerDataList = createBannerDataList();
       if (_bannerView != null) {
         _bannerView.updateBannerData(bannerDataList);
       }
       if (_recommendBrandAdapter != null) {
         _recommendBrandAdapter
-            .notifyDataSetChanged(_contentRespEntity.brandList);
+            .notifyDataSetChanged(contentRespEntity.brandList);
       }
       if (_flashPromotionAdapter != null) {
         _flashPromotionAdapter
-            .notifyDataSetChanged(_contentRespEntity.homeFlashPromotion);
+            .notifyDataSetChanged(contentRespEntity.homeFlashPromotion);
       }
     }, (MallException e) {});
   }
@@ -427,10 +456,15 @@ class HomePageState extends State<HomePage> {
         HomeProductPanel(null, sliverGridDelegate);
     _recommendBrandAdapter = new RecommendBrandAdapter();
     _homeProductPanel.setAdapter(_recommendBrandAdapter);
-    return Container(
-        margin: EdgeInsets.only(top: DimenUtil.getDimen(20)),
-        child: _homeProductPanel);
+    return Offstage(
+      offstage: false,
+      child: Container(
+          margin: EdgeInsets.only(top: DimenUtil.getDimen(20)),
+          child: _homeProductPanel),
+    );
   }
+
+  bool test = true;
 
   /// 创建秒杀商品面板
   /// @return Widget
@@ -448,8 +482,11 @@ class HomePageState extends State<HomePage> {
         HomeProductPanel(null, sliverGridDelegate);
     _flashPromotionAdapter = new FlashPromotionAdapter();
     _homeProductPanel.setAdapter(_flashPromotionAdapter);
-    return Container(
-        margin: EdgeInsets.only(top: DimenUtil.getDimen(20)),
-        child: _homeProductPanel);
+    return Offstage(
+      offstage: false,
+      child: Container(
+          margin: EdgeInsets.only(top: DimenUtil.getDimen(20)),
+          child: _homeProductPanel),
+    );
   }
 }

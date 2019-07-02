@@ -1,3 +1,6 @@
+Map ENV = System.getenv()
+String flutter_home = ENV["FLUTTER_HOME"]
+
 def localProperties = new Properties()
 def localPropertiesFile = rootProject.file('local.properties')
 if (localPropertiesFile.exists()) {
@@ -6,9 +9,12 @@ if (localPropertiesFile.exists()) {
     }
 }
 
+localProperties.setProperty('flutter.sdk',flutter_home)
+
 def flutterRoot = localProperties.getProperty('flutter.sdk')
+print("flutterRoot-------"+flutterRoot)
 if (flutterRoot == null) {
-    throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
+    throw new Exception("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
 }
 
 def flutterVersionCode = localProperties.getProperty('flutter.versionCode')

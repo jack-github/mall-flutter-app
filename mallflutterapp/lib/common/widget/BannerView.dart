@@ -302,11 +302,9 @@ class BannerViewState extends State<BannerView> {
         },
         onTapUp: (TapUpDetails details) {
           _restartTimer();
-          print("-----------------onTapUp");
         },
         onTapCancel: () {
           _restartTimer();
-          print("-----------------onTapCancel");
         });
   }
 }

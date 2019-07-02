@@ -47,6 +47,7 @@ class FlashPromotionAdapter extends BaseHomePanelAdapter {
 
   @override
   Widget getTopView() {
+     print("========"+format(homeFlashPromotionBean.nextStartTime).toString());
     // TODO: implement getTopView
     return Container(
         margin: EdgeInsets.only(
@@ -55,7 +56,22 @@ class FlashPromotionAdapter extends BaseHomePanelAdapter {
             right: DimenUtil.getDimen(15)),
         child: Stack(
           children: <Widget>[
-            Text("品牌制造商直供"),
+            Container(
+              child: Column(
+                children: <Widget>[
+                  Text(
+                    "秒杀专场",
+                    style: TextStyle(
+                        fontSize: DimenUtil.getDimen(16), color: Colors.black),
+                  ),
+                  Text(
+                    "下一场"+homeFlashPromotionBean.nextStartTime.toString()+"开始",
+                    style: TextStyle(
+                        fontSize: DimenUtil.getDimen(16), color: Colors.grey[400]),
+                  ),
+                ],
+              ),
+            ),
             Align(
                 alignment: Alignment.centerRight,
                 child: Row(
@@ -72,6 +88,10 @@ class FlashPromotionAdapter extends BaseHomePanelAdapter {
                     ]))
           ],
         ));
+  }
+
+  String format(DateTime data){
+    return data.year.toString();
   }
 
   @override
@@ -92,7 +112,6 @@ class FlashPromotionAdapter extends BaseHomePanelAdapter {
     }
     return Container(
         padding: EdgeInsets.all(DimenUtil.getDimen(5)),
-        color: Colors.grey[100],
         child: Column(
           children: <Widget>[
             Expanded(
@@ -118,9 +137,13 @@ class FlashPromotionAdapter extends BaseHomePanelAdapter {
                             width: DimenUtil.getDimen(40),
                             height: DimenUtil.getDimen(40),
                             alignment: AlignmentDirectional.center,
-                            child: AutoSizeText("￥" + data.price.toInt().toString(),DimenUtil.getDimen(35),style: TextStyle(
-                                fontSize: DimenUtil.getDimen(15),
-                                color: Colors.white),),
+                            child: AutoSizeText(
+                              "￥" + data.price.toInt().toString(),
+                              DimenUtil.getDimen(35),
+                              style: TextStyle(
+                                  fontSize: DimenUtil.getDimen(15),
+                                  color: Colors.white),
+                            ),
                             decoration: BoxDecoration(
                                 shape: BoxShape.circle, color: Colors.red),
                           ),
@@ -129,7 +152,30 @@ class FlashPromotionAdapter extends BaseHomePanelAdapter {
                     ),
                     onTap: () {
                       MallToast.showToast(data.name);
-                    }))
+                    })),
+            Container(
+                alignment: AlignmentDirectional.center,
+                child: Text("秒杀价￥" + data.flashPromotionPrice.toString(),
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    style: TextStyle(
+                        fontSize: DimenUtil.getDimen(14), color: Colors.red))),
+            Container(
+                alignment: AlignmentDirectional.center,
+                child: Text(data.name.toString(),
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    style: TextStyle(
+                        fontSize: DimenUtil.getDimen(14),
+                        color: Colors.black))),
+            Container(
+                alignment: AlignmentDirectional.center,
+                child: Text(data.subTitle.toString(),
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    style: TextStyle(
+                        fontSize: DimenUtil.getDimen(14),
+                        color: Colors.grey[400]))),
           ],
         ));
   }

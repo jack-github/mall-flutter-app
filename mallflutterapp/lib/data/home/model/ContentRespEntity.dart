@@ -76,10 +76,10 @@ class ContentRespEntity extends BaseResponseEntity{
 }
 
 class HomeFlashPromotionBean {
-  String startTime;
-  String endTime;
-  String nextStartTime;
-  String nextEndTime;
+  DateTime startTime;
+  DateTime endTime;
+  DateTime nextStartTime;
+  DateTime nextEndTime;
   List<ProductListListBean> productList;
 
   HomeFlashPromotionBean(

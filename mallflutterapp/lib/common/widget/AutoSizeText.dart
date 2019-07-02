@@ -74,7 +74,6 @@ class AutoSizeTextState extends State<AutoSizeText>
 
   @override
   Widget build(BuildContext context) {
-    print("_fontSize-----0------" + _fontSize.toString());
     return new ScaleTransition(
       scale: CurvedAnimation(
           parent: _controller, curve: Interval(0, 1, curve: Curves.easeOut)),
@@ -96,7 +95,6 @@ class AutoSizeTextState extends State<AutoSizeText>
   /// @date 2019/6/27 16:16
   void _initFontSize() {
     _fontSize = _textStyle.fontSize;
-    print("_fontSize-----0------" + _fontSize.toString());
     _controller = new AnimationController(
         vsync: this, duration: const Duration(milliseconds: 200));
     _controller.addStatusListener((status) {
@@ -120,7 +118,6 @@ class AutoSizeTextState extends State<AutoSizeText>
           }
           setState(() {
             _fontSize = fontSize;
-            print("_fontSize-----------" + _fontSize.toString());
           });
         }
       }
